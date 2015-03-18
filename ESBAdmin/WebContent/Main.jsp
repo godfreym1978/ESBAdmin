@@ -1,5 +1,17 @@
-<!DOCTYPE html>
-<%@ page import="com.ibm.MQAdmin.*"%>
+<!-- 
+/********************************************************************************/
+/* */
+/* Project: ESBAdmin */
+/* Author: Godfrey Peter Menezes */
+/* 
+Copyright © 2010 by 2015 Godfrey P Menezes
+All rights reserved. This book or any portion thereof
+may not be reproduced or used in any manner whatsoever
+without the express written permission of Godfrey P Menezes.
+*/
+/********************************************************************************/
+ -->
+ <%@ page import="com.ibm.MQAdmin.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.sql.*"%>
 <%@ page
