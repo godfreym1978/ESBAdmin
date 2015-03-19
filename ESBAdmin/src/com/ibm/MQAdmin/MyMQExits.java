@@ -1,5 +1,6 @@
 package com.ibm.MQAdmin;
 
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -7,7 +8,6 @@ import java.nio.ByteBuffer;
 
 import com.ibm.mq.exits.MQCD;
 import com.ibm.mq.exits.MQCXP;
-import com.ibm.mq.exits.WMQReceiveExit;
 import com.ibm.mq.exits.WMQSecurityExit;
 import com.ibm.mq.exits.WMQSendExit;
 

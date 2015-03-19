@@ -1,3 +1,17 @@
+<!-- 
+/********************************************************************************/
+/* */
+/* Project: ESBAdmin */
+/* Author: Godfrey Peter Menezes */
+/* 
+Copyright © 2015 Godfrey P Menezes
+All rights reserved. This code or any portion thereof
+may not be reproduced or used in any manner whatsoever
+without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
+
+*/
+/********************************************************************************/
+ -->
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>

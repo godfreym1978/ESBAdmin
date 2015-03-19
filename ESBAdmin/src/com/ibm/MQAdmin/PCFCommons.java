@@ -1,3 +1,16 @@
+/********************************************************************************/
+/* */
+/* Project: ESBAdmin */
+/* Author: Godfrey Peter Menezes */
+/* 
+Copyright © 2015 Godfrey P Menezes
+All rights reserved. This code or any portion thereof
+may not be reproduced or used in any manner whatsoever
+without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
+
+*/
+/********************************************************************************/
+
 package com.ibm.MQAdmin;
 
 import java.io.IOException;
@@ -3470,11 +3483,11 @@ public class PCFCommons {
 
 	}
 
-	public void deleteSub(String qmgrHost, int qmgrPort, String subName)
+	public void deleteSub(String qmgrHost, int qmgrPort, String subName, String qChannel)
 			throws PCFException, MQDataException, IOException {
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
-				"SYSTEM.DEF.SVRCONN");
+				qChannel);
 
 		// Create the PCF message type for the inquire.
 		PCFMessage pcfCmd = new PCFMessage(

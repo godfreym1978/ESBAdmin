@@ -1,22 +1,32 @@
+/********************************************************************************/
+/* */
+/* Project: ESBAdmin */
+/* Author: Godfrey Peter Menezes */
+/* 
+Copyright © 2015 Godfrey P Menezes
+All rights reserved. This code or any portion thereof
+may not be reproduced or used in any manner whatsoever
+without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
+
+*/
+/********************************************************************************/
+
 package com.ibm.MQAdmin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 
 import org.apache.commons.io.FileUtils;
 
 import com.ibm.broker.config.proxy.ApplicationProxy;
-import com.ibm.broker.config.proxy.AttributeConstants;
 import com.ibm.broker.config.proxy.BrokerConnectionParameters;
 import com.ibm.broker.config.proxy.BrokerProxy;
 import com.ibm.broker.config.proxy.ConfigManagerProxyException;
 import com.ibm.broker.config.proxy.ConfigManagerProxyLoggedException;
 import com.ibm.broker.config.proxy.ConfigManagerProxyPropertyNotInitializedException;
 import com.ibm.broker.config.proxy.DeployResult;
-import com.ibm.broker.config.proxy.DeployedObject;
 import com.ibm.broker.config.proxy.ExecutionGroupProxy;
 import com.ibm.broker.config.proxy.MQBrokerConnectionParameters;
 import com.ibm.broker.config.proxy.MessageFlowProxy;

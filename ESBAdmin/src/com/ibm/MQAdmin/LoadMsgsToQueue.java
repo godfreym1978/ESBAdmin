@@ -1,9 +1,20 @@
-package com.ibm.MQAdmin;
+/********************************************************************************/
+/* */
+/* Project: ESBAdmin */
+/* Author: Godfrey Peter Menezes */
+/* 
+Copyright © 2015 Godfrey P Menezes
+All rights reserved. This code or any portion thereof
+may not be reproduced or used in any manner whatsoever
+without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
+*/
+/********************************************************************************/
+
+package com.ibm.MQAdmin;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,7 +23,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.io.FileUtils;

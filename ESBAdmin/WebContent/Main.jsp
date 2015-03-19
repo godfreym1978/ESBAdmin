@@ -4,14 +4,15 @@
 /* Project: ESBAdmin */
 /* Author: Godfrey Peter Menezes */
 /* 
-Copyright © 2010 by 2015 Godfrey P Menezes
-All rights reserved. This book or any portion thereof
+Copyright © 2015 Godfrey P Menezes
+All rights reserved. This code or any portion thereof
 may not be reproduced or used in any manner whatsoever
-without the express written permission of Godfrey P Menezes.
+without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
+
 */
 /********************************************************************************/
  -->
- <%@ page import="com.ibm.MQAdmin.*"%>
+<%@ page import="com.ibm.MQAdmin.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.sql.*"%>
 <%@ page

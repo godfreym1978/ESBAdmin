@@ -1,3 +1,16 @@
+/********************************************************************************/
+/* */
+/* Project: ESBAdmin */
+/* Author: Godfrey Peter Menezes */
+/* 
+ Copyright © 2015 Godfrey P Menezes
+ All rights reserved. This code or any portion thereof
+ may not be reproduced or used in any manner whatsoever
+ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
+
+ */
+/********************************************************************************/
+
 package com.ibm.MQAdmin;
 
 import java.io.File;
@@ -49,9 +62,9 @@ public class DownloadQMgr extends HttpServlet {
 		HttpSession httpSession = request.getSession(true);
 
 		String UserID = httpSession.getAttribute("UserID").toString();
-		File userQMFile = new File(
-						System.getProperty("catalina.base")
-								+ File.separator+"ESBAdmin"+File.separator+UserID+File.separator+"QMEnv.txt");
+		File userQMFile = new File(System.getProperty("catalina.base")
+				+ File.separator + "ESBAdmin" + File.separator + UserID
+				+ File.separator + "QMEnv.txt");
 		String qMgr = httpSession.getAttribute(request.getParameter("qMgr"))
 				.toString();
 		String qPort = null;
@@ -59,66 +72,76 @@ public class DownloadQMgr extends HttpServlet {
 		String qChannel = null;
 
 		for (String line : FileUtils.readLines(userQMFile)) {
-			if (line.indexOf(qMgr)>0){
+			if (line.indexOf(qMgr) > 0) {
 				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-				
+
 				for (CSVRecord csvRecord : parser) {
 					qHost = csvRecord.get(0);
 					qPort = csvRecord.get(2);
 					qChannel = csvRecord.get(3);
-					}							
+				}
 			}
 		}
 
 		try {
 			PCFCommons pcfCM = new PCFCommons();
 
-			List<Map> ListQueueNames = pcfCM.ListQueueNamesDtl(qHost, Integer.parseInt(qPort), qChannel);
+			List<Map> ListQueueNames = pcfCM.ListQueueNamesDtl(qHost,
+					Integer.parseInt(qPort), qChannel);
 
 			for (int i = 0; i < ListQueueNames.size(); i++) {
 				qMgrBytes = String.valueOf(
 						pcfCM.createQScript(qHost, Integer.parseInt(qPort),
 								ListQueueNames.get(i).get("MQCA_Q_NAME")
-										.toString().trim(), qChannel)).getBytes();
+										.toString().trim(), qChannel))
+						.getBytes();
 				outStream.write(qMgrBytes);
 			}
 
-			List<Map> listChannels = pcfCM.channelDetails(qHost, Integer.parseInt(qPort),qChannel);
+			List<Map> listChannels = pcfCM.channelDetails(qHost,
+					Integer.parseInt(qPort), qChannel);
 
 			for (int i = 0; i < listChannels.size(); i++) {
 				qMgrBytes = String.valueOf(
 						pcfCM.createChlScript(qHost, Integer.parseInt(qPort),
 								listChannels.get(i).get("MQCACH_CHANNEL_NAME")
-										.toString().trim(),qChannel)).getBytes();
+										.toString().trim(), qChannel))
+						.getBytes();
 				outStream.write(qMgrBytes);
 			}
 
-			List<Map> listListener = pcfCM.listenerDetails(qHost, Integer.parseInt(qPort),qChannel);
+			List<Map> listListener = pcfCM.listenerDetails(qHost,
+					Integer.parseInt(qPort), qChannel);
 
 			for (int i = 0; i < listListener.size(); i++) {
 				qMgrBytes = String.valueOf(
-						pcfCM.createListScript(qHost, Integer.parseInt(qPort), listListener
-								.get(i).get("MQCACH_LISTENER_NAME").toString()
-								.trim(),qChannel)).getBytes();
+						pcfCM.createListScript(qHost, Integer.parseInt(qPort),
+								listListener.get(i).get("MQCACH_LISTENER_NAME")
+										.toString().trim(), qChannel))
+						.getBytes();
 				outStream.write(qMgrBytes);
 			}
 
-			List<Map> listTopic = pcfCM.ListTopicNames(qHost, Integer.parseInt(qPort),qChannel);
+			List<Map> listTopic = pcfCM.ListTopicNames(qHost,
+					Integer.parseInt(qPort), qChannel);
 
 			for (int i = 0; i < listTopic.size(); i++) {
 				qMgrBytes = String.valueOf(
-						pcfCM.createTopicScript(qHost, Integer.parseInt(qPort), listTopic
-								.get(i).get("MQCA_TOPIC_NAME").toString()
-								.trim(),qChannel)).getBytes();
+						pcfCM.createTopicScript(qHost, Integer.parseInt(qPort),
+								listTopic.get(i).get("MQCA_TOPIC_NAME")
+										.toString().trim(), qChannel))
+						.getBytes();
 				outStream.write(qMgrBytes);
 			}
 
-			List<Map> listSubs = pcfCM.ListSubNames(qHost, Integer.parseInt(qPort),qChannel);
+			List<Map> listSubs = pcfCM.ListSubNames(qHost,
+					Integer.parseInt(qPort), qChannel);
 
 			for (int i = 0; i < listSubs.size(); i++) {
 				qMgrBytes = String.valueOf(
-						pcfCM.createSubScript(qHost, Integer.parseInt(qPort), listSubs.get(i)
-								.get("MQCACF_SUB_NAME").toString().trim(),qChannel))
+						pcfCM.createSubScript(qHost, Integer.parseInt(qPort),
+								listSubs.get(i).get("MQCACF_SUB_NAME")
+										.toString().trim(), qChannel))
 						.getBytes();
 				outStream.write(qMgrBytes);
 			}
