@@ -17,6 +17,9 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="com.ibm.MQAdmin.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
+<%@ page import="org.apache.commons.csv.*"%>
+<%@ page
+	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
 
 <html>
 <script type="text/javascript">
@@ -52,118 +55,136 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 }else{
 	
 	if(session.getAttribute("UserID").equals("admin")){
-try{
-	String qmDtls = session.getAttribute(request.getParameter("qMgr")).toString();
-	String qMgr = qmDtls.substring(qmDtls.indexOf('|') + 1,qmDtls.indexOf(':'));
-	String qPort = qmDtls.substring(qmDtls.indexOf(':') + 1,qmDtls.length());
-	String qHost = qmDtls.substring(0, qmDtls.indexOf('|'));
-	
-	String UserID = session.getAttribute("UserID").toString();
-	Util newUtil = new Util();
-	
-	PCFCommons newPFCCM = new PCFCommons();
-	System.out.println("qname");
-	if (request.getParameter("qName") != null){
-		String resOutput = newPFCCM.createQueue(qHost, 
-				Integer.parseInt(qPort), 
-				request.getParameter("qType").toString(), 
-				request.getParameter("qName").toString(), 
-				Boolean.parseBoolean(request.getParameter("xmitType")),
-				request.getParameter("backoutQName").toString());
-		%>
-								<table border=1 align=center class="gridtable">
-										<tr><td>Queue Name</td><td><%=request.getParameter("qName")%></td></tr>
-										<tr><td>Queue Type</td><td><%=request.getParameter("qType")%></td></tr>
-										<tr><td>Backout Queue Name</td><td><%=request.getParameter("backoutQName")%></td></tr>
-								</table>
-		
-								<center><b><%=resOutput%></b></center>
-		<%
-		
-		
-	}
+		try{
 
-	System.out.println("channel");
-	if (request.getParameter("chanName")!= null){
-		newPFCCM.createChannel(qHost, 
-				Integer.parseInt(qPort), 
-				request.getParameter("chanType").toString(), 
-				request.getParameter("chanName").toString(), 
-				request.getParameter("xmitQueue"));
-		%>
-		<table border=1 align=center >
-				<tr><td>Channel Name</td><td><%=request.getParameter("chanName")%></td></tr>
-				<tr><td>Channel Type</td><td><%=request.getParameter("chanType")%></td></tr>
-				<tr><td>Connecting Qmgr IP</td><td><%=request.getParameter("targetQmgrIP")%></td></tr>
-				<tr><td>Connecting Qmgr Port</td><td><%=request.getParameter("targetQmgrPort")%></td></tr>
-				<tr><td>Transmit Queue</td><td><%=request.getParameter("xmitQueue")%></td></tr>
+			String UserID = session.getAttribute("UserID").toString();
+			File userQMFile = new File(
+							System.getProperty("catalina.base")
+									+ File.separator+"ESBAdmin"+File.separator+UserID+File.separator+"QMEnv.txt");
+			String qMgr = request.getParameter("qMgr");
+			String qPort = null;
+			String qHost = null;
+			String qChannel = null;
 
-		</table>
-		<%
-	}
-	System.out.println("listener");
-	if (request.getParameter("listName")!= null){
-		int portNum;
-		System.out.println(request.getParameter("portNum"));
-		if(request.getParameter("portNum").toString().equals("")){
-			portNum = 0; 	
-		}else{
-			portNum = Integer.parseInt(request.getParameter("portNum").toString());
-		}
-		
-		newPFCCM.createListener(qHost, 
-				Integer.parseInt(qPort), 
-				request.getParameter("listType").toString(), 
-				request.getParameter("listName").toString(), 
-				portNum);
-		%>
-		<table border=1 align=center >
-				<tr><td>Listener Name</td><td><%=request.getParameter("listName")%></td></tr>
-				<tr><td>Listener Type</td><td><%=request.getParameter("listType")%></td></tr>
-				<tr><td>Port Number</td><td><%=request.getParameter("portNum")%></td></tr>
-		</table>
-		<%
-	}
+			for (String line : FileUtils.readLines(userQMFile)) {
+				if (line.indexOf(qMgr)>0){
+					CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+					
+					for (CSVRecord csvRecord : parser) {
+						qHost = csvRecord.get(0);
+						qPort = csvRecord.get(2);
+						qChannel = csvRecord.get(3);
+						}							
+				}
+			}
 
 	
-	if (request.getParameter("topicName")!= null){
-		newPFCCM.createTopic(qHost, 
-				Integer.parseInt(qPort), 
-				request.getParameter("topicName").toString(), 
-				request.getParameter("topicString").toString(), 
-				request.getParameter("topicDesc").toString());
+			Util newUtil = new Util();
+			
+			PCFCommons newPFCCM = new PCFCommons();
+			if (request.getParameter("qName") != null){
+				String resOutput = newPFCCM.createQueue(qHost, 
+						Integer.parseInt(qPort), 
+						request.getParameter("qType").toString(), 
+						request.getParameter("qName").toString(), 
+						Boolean.parseBoolean(request.getParameter("xmitType")),
+						request.getParameter("backoutQName").toString(),
+						qChannel);
+				%>
+						<table border=1 align=center class="gridtable">
+							<tr><td>Queue Name</td><td><%=request.getParameter("qName")%></td></tr>
+							<tr><td>Queue Type</td><td><%=request.getParameter("qType")%></td></tr>
+							<tr><td>Backout Queue Name</td><td><%=request.getParameter("backoutQName")%></td></tr>
+						</table>
+				
+						<center><b><%=resOutput%></b></center>
+				<%
+			}
 
-		%>
-		<table border=1 align=center >
-				<tr><td>Topic Name</td><td><%=request.getParameter("topicName")%></td></tr>
-				<tr><td>Topic String</td><td><%=request.getParameter("topicString")%></td></tr>
-				<tr><td>Topic Description</td><td><%=request.getParameter("topicDesc")%></td></tr>
-		</table>
-		<%
-	}
+			if (request.getParameter("chanName")!= null){
+				newPFCCM.createChannel(qHost, 
+						Integer.parseInt(qPort), 
+						request.getParameter("chanType").toString(), 
+						request.getParameter("chanName").toString(), 
+						request.getParameter("xmitQueue"),
+						qChannel);
+				%>
+				<table border=1 align=center >
+						<tr><td>Channel Name</td><td><%=request.getParameter("chanName")%></td></tr>
+						<tr><td>Channel Type</td><td><%=request.getParameter("chanType")%></td></tr>
+						<tr><td>Connecting Qmgr IP</td><td><%=request.getParameter("targetQmgrIP")%></td></tr>
+						<tr><td>Connecting Qmgr Port</td><td><%=request.getParameter("targetQmgrPort")%></td></tr>
+						<tr><td>Transmit Queue</td><td><%=request.getParameter("xmitQueue")%></td></tr>
+		
+				</table>
+				<%
+			}
+
+			if (request.getParameter("listName")!= null){
+				int portNum;
+				System.out.println(request.getParameter("portNum"));
+				if(request.getParameter("portNum").toString().equals("")){
+					portNum = 0; 	
+				}else{
+					portNum = Integer.parseInt(request.getParameter("portNum").toString());
+				}
+				
+				newPFCCM.createListener(qHost, 
+						Integer.parseInt(qPort), 
+						request.getParameter("listType").toString(), 
+						request.getParameter("listName").toString(), 
+						portNum,
+						qChannel);
+				%>
+				<table border=1 align=center >
+						<tr><td>Listener Name</td><td><%=request.getParameter("listName")%></td></tr>
+						<tr><td>Listener Type</td><td><%=request.getParameter("listType")%></td></tr>
+						<tr><td>Port Number</td><td><%=request.getParameter("portNum")%></td></tr>
+				</table>
+				<%
+			}
+
+	
+			if (request.getParameter("topicName")!= null){
+				newPFCCM.createTopic(qHost, 
+						Integer.parseInt(qPort), 
+						request.getParameter("topicName").toString(), 
+						request.getParameter("topicString").toString(), 
+						request.getParameter("topicDesc").toString(),
+						qChannel);
+		
+				%>
+				<table border=1 align=center >
+						<tr><td>Topic Name</td><td><%=request.getParameter("topicName")%></td></tr>
+						<tr><td>Topic String</td><td><%=request.getParameter("topicString")%></td></tr>
+						<tr><td>Topic Description</td><td><%=request.getParameter("topicDesc")%></td></tr>
+				</table>
+				<%
+			}
 	
 
-	if (request.getParameter("subName")!= null){
-		newPFCCM.createSub(qHost, 
-				Integer.parseInt(qPort), 
-				request.getParameter("subName").toString(), 
-				request.getParameter("topicString").toString(), 
-				request.getParameter("subTopicName").toString(),
-				request.getParameter("subDest").toString(),
-				request.getParameter("subDestQM").toString(),
-				request.getParameter("subUsrID").toString());
-		%>
-		<table border=1 align=center >
-		
-				<tr><td>Subscription Name</td><td><%=request.getParameter("subName")%></td></tr>
-				<tr><td>Topic String</td><td><%=request.getParameter("topicString")%></td></tr>
-				<tr><td>Topic Name</td><td><%=request.getParameter("subTopicName")%></td></tr>
-				<tr><td>Subscription Destination</td><td><%=request.getParameter("subDest")%></td></tr>
-				<tr><td>Subscription Destination Queue Manager</td><td><%=request.getParameter("subDestQM")%></td></tr>
-				<tr><td>Subscription User ID</td><td><%=request.getParameter("subUsrID")%></td></tr>
-		</table>
-		<%
-	}
+			if (request.getParameter("subName")!= null){
+				newPFCCM.createSub(qHost, 
+						Integer.parseInt(qPort), 
+						request.getParameter("subName").toString(), 
+						request.getParameter("topicString").toString(), 
+						request.getParameter("subTopicName").toString(),
+						request.getParameter("subDest").toString(),
+						request.getParameter("subDestQM").toString(),
+						request.getParameter("subUsrID").toString(),
+						qChannel);
+				%>
+				<table border=1 align=center >
+				
+						<tr><td>Subscription Name</td><td><%=request.getParameter("subName")%></td></tr>
+						<tr><td>Topic String</td><td><%=request.getParameter("topicString")%></td></tr>
+						<tr><td>Topic Name</td><td><%=request.getParameter("subTopicName")%></td></tr>
+						<tr><td>Subscription Destination</td><td><%=request.getParameter("subDest")%></td></tr>
+						<tr><td>Subscription Destination Queue Manager</td><td><%=request.getParameter("subDestQM")%></td></tr>
+						<tr><td>Subscription User ID</td><td><%=request.getParameter("subUsrID")%></td></tr>
+				</table>
+				<%
+			}
 	
 	
 		}catch(Exception e){

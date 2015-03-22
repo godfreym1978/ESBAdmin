@@ -19,7 +19,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="com.ibm.MQAdmin.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.sql.*" %>
-<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 <html>
 <head>
 <meta http-equiv="Content-Style-Type" content="text/css">

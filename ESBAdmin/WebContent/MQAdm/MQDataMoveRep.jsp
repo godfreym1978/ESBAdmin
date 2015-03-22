@@ -20,8 +20,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="java.net.*,java.io.*"%>
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*"%>
-<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
-
 
 <html>
 <head>
