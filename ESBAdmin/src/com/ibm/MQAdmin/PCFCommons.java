@@ -237,7 +237,7 @@ public class PCFCommons {
 	}
 
 	public List<Map> ListTopicStatus(String qmgrHost, int qmgrPort,
-			String topicName, String qChannel) throws PCFException, MQDataException, IOException {
+			String topicString, String qChannel) throws PCFException, MQDataException, IOException {
 
 		List<Map> topicListDtl = new ArrayList<Map>();
 		Map iMap = new HashMap();
@@ -248,34 +248,86 @@ public class PCFCommons {
 		// Create the PCF message type for the inquire.
 		PCFMessage pcfCmd = new PCFMessage(
 				MQConstants.MQCMD_INQUIRE_TOPIC_STATUS);
-
+		
 		// Add the inquire rules.
 		// Topic name = wildcard.
-		pcfCmd.addParameter(MQConstants.MQCA_TOPIC_STRING, topicName);
+		pcfCmd.addParameter(MQConstants.MQCA_TOPIC_STRING, "TEST/TOPIC");
 		// Execute the command. The returned object is an array of PCF messages.
 		PCFMessage[] pcfResponse = agent.send(pcfCmd);
-
+		String strValue = new String();
 		for (int index = 0; index < pcfResponse.length; index++) {
-			if (!pcfResponse[index].toString().contains("SYSTEM")) {
 				iMap = new HashMap<>();
 				iMap.put("MQCA_CLUSTER_NAME", pcfResponse[index]
 						.getParameterValue(MQConstants.MQCA_CLUSTER_NAME));
-				iMap.put(
-						"MQIA_TOPIC_DEF_PERSISTENCE",
-						pcfResponse[index]
-								.getParameterValue(MQConstants.MQIA_TOPIC_DEF_PERSISTENCE));
-				iMap.put(
-						"MQIA_DEF_PUT_RESPONSE_TYPE",
-						pcfResponse[index]
-								.getParameterValue(MQConstants.MQIA_DEF_PUT_RESPONSE_TYPE));
+				
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_TOPIC_DEF_PERSISTENCE).toString())) {
+				case MQConstants.MQPER_PERSISTENT:
+					iMap.put("MQIA_TOPIC_DEF_PERSISTENCE", "PERSISTENT");
+					break;
+				case MQConstants.MQPER_NOT_PERSISTENT:
+					iMap.put("MQIA_TOPIC_DEF_PERSISTENCE", "NOT_PERSISTENT");
+					break;
+				default:
+					iMap.put("MQIA_TOPIC_DEF_PERSISTENCE", "NULL");
+					break;
+				}
+
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_DEF_PUT_RESPONSE_TYPE).toString())) {
+				case MQConstants.MQPRT_SYNC_RESPONSE:
+					iMap.put("MQIA_DEF_PUT_RESPONSE_TYPE", "SYNC RESPONSE");
+					break;
+				case MQConstants.MQPRT_ASYNC_RESPONSE:
+					iMap.put("MQIA_DEF_PUT_RESPONSE_TYPE", "ASYNC RESPONSE");
+					break;
+				default:
+					iMap.put("MQIA_DEF_PUT_RESPONSE_TYPE", "NULL");
+					break;
+				}
+
 				iMap.put("MQIA_DEF_PRIORITY", pcfResponse[index]
 						.getParameterValue(MQConstants.MQIA_DEF_PRIORITY));
-				iMap.put("MQIA_DURABLE_SUB", pcfResponse[index]
-						.getParameterValue(MQConstants.MQIA_DURABLE_SUB));
-				iMap.put("MQIA_INHIBIT_PUB", pcfResponse[index]
-						.getParameterValue(MQConstants.MQIA_INHIBIT_PUB));
-				iMap.put("MQIA_INHIBIT_SUB", pcfResponse[index]
-						.getParameterValue(MQConstants.MQIA_INHIBIT_SUB));
+
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_DURABLE_SUB).toString())) {
+				case MQConstants.MQSUB_DURABLE_ALLOWED:
+					iMap.put("MQIA_DURABLE_SUB", "DURABLE ALLOWED");
+					break;
+				case MQConstants.MQSUB_DURABLE_INHIBITED:
+					iMap.put("MQIA_DURABLE_SUB", "DURABLE INHIBITED");
+					break;
+				default:
+					iMap.put("MQIA_DURABLE_SUB", "NULL");
+					break;
+				}
+
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_INHIBIT_PUB).toString())) {
+				case MQConstants.MQTA_PUB_ALLOWED:
+					iMap.put("MQIA_INHIBIT_PUB", "PUB ALLOWED");
+					break;
+				case MQConstants.MQTA_PUB_INHIBITED:
+					iMap.put("MQIA_INHIBIT_PUB", "PUB INHIBITED");
+					break;
+				default:
+					iMap.put("MQIA_INHIBIT_PUB", "NULL");
+					break;
+				}
+
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_INHIBIT_SUB).toString())) {
+				case MQConstants.MQTA_SUB_ALLOWED:
+					iMap.put("MQIA_INHIBIT_SUB", "SUB ALLOWED");
+					break;
+				case MQConstants.MQTA_SUB_INHIBITED:
+					iMap.put("MQIA_INHIBIT_SUB", "SUB INHIBITED");
+					break;
+				default:
+					iMap.put("MQIA_INHIBIT_SUB", "NULL");
+					break;
+				}
+
 				iMap.put("MQCA_ADMIN_TOPIC_NAME", pcfResponse[index]
 						.getParameterValue(MQConstants.MQCA_ADMIN_TOPIC_NAME));
 				iMap.put("MQCA_MODEL_DURABLE_Q", pcfResponse[index]
@@ -284,32 +336,119 @@ public class PCFCommons {
 						"MQCA_MODEL_NON_DURABLE_Q",
 						pcfResponse[index]
 								.getParameterValue(MQConstants.MQCA_MODEL_NON_DURABLE_Q));
-				iMap.put("MQIA_PM_DELIVERY", pcfResponse[index]
-						.getParameterValue(MQConstants.MQIA_PM_DELIVERY));
-				iMap.put("MQIA_NPM_DELIVERY", pcfResponse[index]
-						.getParameterValue(MQConstants.MQIA_NPM_DELIVERY));
-				iMap.put(
-						"MQIACF_RETAINED_PUBLICATION",
-						pcfResponse[index]
-								.getParameterValue(MQConstants.MQIACF_RETAINED_PUBLICATION));
+				
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_PM_DELIVERY).toString())) {
+				case MQConstants.MQDLV_ALL:
+					iMap.put("MQIA_PM_DELIVERY", "ALL");
+					break;
+				case MQConstants.MQDLV_ALL_DUR:
+					iMap.put("MQIA_PM_DELIVERY", "ALL DURABLE");
+					break;
+				case MQConstants.MQDLV_ALL_AVAIL:
+					iMap.put("MQIA_PM_DELIVERY", "ALL AVAILABLE");
+					break;
+				default:
+					iMap.put("MQIA_PM_DELIVERY", "NULL");
+					break;
+				}
+
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_NPM_DELIVERY).toString())) {
+				case MQConstants.MQDLV_ALL:
+					iMap.put("MQIA_NPM_DELIVERY", "ALL");
+					break;
+				case MQConstants.MQDLV_ALL_DUR:
+					iMap.put("MQIA_NPM_DELIVERY", "ALL DURABLE");
+					break;
+				case MQConstants.MQDLV_ALL_AVAIL:
+					iMap.put("MQIA_NPM_DELIVERY", "ALL AVAILABLE");
+					break;
+				default:
+					iMap.put("MQIA_NPM_DELIVERY", "NULL");
+					break;
+				}
+				
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIACF_RETAINED_PUBLICATION).toString())) {
+				case MQConstants.MQQSO_YES:
+					iMap.put("MQIACF_RETAINED_PUBLICATION", "RETAINED PUBLICATION");
+					break;
+				case MQConstants.MQQSO_NO:
+					iMap.put("MQIACF_RETAINED_PUBLICATION", "NOT RETAINED PUBLICATION");
+					break;
+				default:
+					iMap.put("MQIACF_RETAINED_PUBLICATION", "NULL");
+					break;
+				}
+				
 				iMap.put("MQIA_PUB_COUNT", pcfResponse[index]
 						.getParameterValue(MQConstants.MQIA_PUB_COUNT));
 				iMap.put("MQIA_SUB_COUNT", pcfResponse[index]
 						.getParameterValue(MQConstants.MQIA_SUB_COUNT));
-				iMap.put("MQIA_SUB_SCOPE", pcfResponse[index]
-						.getParameterValue(MQConstants.MQIA_SUB_SCOPE));
-				iMap.put("MQIA_PUB_SCOPE", pcfResponse[index]
-						.getParameterValue(MQConstants.MQIA_PUB_SCOPE));
-				iMap.put("MQIA_USE_DEAD_LETTER_Q", pcfResponse[index]
-						.getParameterValue(MQConstants.MQIA_USE_DEAD_LETTER_Q));
+				
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_SUB_SCOPE).toString())) {
+				case MQConstants.MQSCOPE_QMGR:
+					iMap.put("MQIA_SUB_SCOPE", "SUB SCOPE ONLY FOR THIS QUEUE MANAGER");
+					break;
+				case MQConstants.MQSCOPE_ALL:
+					iMap.put("MQIA_SUB_SCOPE", "SUB SCOPE FOR ALL QUEUE MANAGERS");
+					break;
+				default:
+					iMap.put("MQIA_SUB_SCOPE", "NULL");
+					break;
+				}
+				
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_PUB_SCOPE).toString())) {
+				case MQConstants.MQSCOPE_QMGR:
+					iMap.put("MQIA_PUB_SCOPE", "PUB SCOPE ONLY FOR THIS QUEUE MANAGER");
+					break;
+				case MQConstants.MQSCOPE_ALL:
+					iMap.put("MQIA_PUB_SCOPE", "PUB SCOPE FOR ALL QUEUE MANAGERS");
+					break;
+				default:
+					iMap.put("MQIA_PUB_SCOPE", "NULL");
+					break;
+				}
+				
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIA_USE_DEAD_LETTER_Q).toString())) {
+				case MQConstants.MQUSEDLQ_NO:
+					iMap.put("MQIA_USE_DEAD_LETTER_Q", "NO");
+					break;
+				case MQConstants.MQUSEDLQ_YES:
+					iMap.put("MQIA_USE_DEAD_LETTER_Q", "YES");
+					break;
+				default:
+					iMap.put("MQIA_USE_DEAD_LETTER_Q", "NULL");
+					break;
+				}
+				
+				
 				iMap.put("MQBACF_SUB_ID", pcfResponse[index]
 						.getParameterValue(MQConstants.MQBACF_SUB_ID));
 				iMap.put("MQCACF_SUB_USER_ID", pcfResponse[index]
 						.getParameterValue(MQConstants.MQCACF_SUB_USER_ID));
-				iMap.put(
-						"MQIACF_DURABLE_SUBSCRIPTION",
-						pcfResponse[index]
-								.getParameterValue(MQConstants.MQIACF_DURABLE_SUBSCRIPTION));
+				/*
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIACF_DURABLE_SUBSCRIPTION).toString())) {
+				case MQConstants.MQSUB_DURABLE_NO:
+					iMap.put("MQIACF_DURABLE_SUBSCRIPTION", "NO");
+					break;
+				case MQConstants.MQSUB_DURABLE_YES:
+					iMap.put("MQIACF_DURABLE_SUBSCRIPTION", "YES");
+					break;
+				default:
+					iMap.put("MQIACF_DURABLE_SUBSCRIPTION", "NULL");
+					break;
+				}
+				*/
+				
+				iMap.put("MQIACF_DURABLE_SUBSCRIPTION", pcfResponse[index]
+						.getParameterValue(MQConstants.MQIACF_DURABLE_SUBSCRIPTION));
+				
 				iMap.put("MQIACF_SUB_TYPE", pcfResponse[index]
 						.getParameterValue(MQConstants.MQIACF_SUB_TYPE));
 				iMap.put("MQCA_RESUME_DATE", pcfResponse[index]
@@ -334,7 +473,6 @@ public class PCFCommons {
 						.getParameterValue(MQConstants.MQBACF_CONNECTION_ID));
 
 				topicListDtl.add(iMap);
-			}
 		}
 
 		// pcfCM.DestroyAgent();
@@ -424,10 +562,21 @@ public class PCFCommons {
 				iMap = new HashMap();
 				iMap.put("MQBACF_CONNECTION_ID", pcfResponse[index]
 						.getParameterValue(MQConstants.MQBACF_CONNECTION_ID));
-				iMap.put(
-						"MQIACF_DURABLE_SUBSCRIPTION",
-						pcfResponse[index]
-								.getParameterValue(MQConstants.MQIACF_DURABLE_SUBSCRIPTION));
+				
+				switch (Integer.parseInt(pcfResponse[index].
+						getParameterValue(MQConstants.MQIACF_DURABLE_SUBSCRIPTION).toString())) {
+				case MQConstants.MQSUB_DURABLE_NO:
+					iMap.put("MQIACF_DURABLE_SUBSCRIPTION", "NO");
+					break;
+				case MQConstants.MQSUB_DURABLE_YES:
+					iMap.put("MQIACF_DURABLE_SUBSCRIPTION", "YES");
+					break;
+				default:
+					iMap.put("MQIACF_DURABLE_SUBSCRIPTION", "NULL");
+					break;
+				}
+
+				
 				iMap.put("MQCACF_LAST_MSG_DATE", pcfResponse[index]
 						.getParameterValue(MQConstants.MQCACF_LAST_MSG_DATE));
 				iMap.put("MQCACF_LAST_MSG_TIME", pcfResponse[index]
@@ -442,7 +591,7 @@ public class PCFCommons {
 						.getParameterValue(MQConstants.MQCACF_SUB_USER_ID));
 				iMap.put("MQBACF_SUB_ID", pcfResponse[index]
 						.getParameterValue(MQConstants.MQBACF_SUB_ID));
-
+				
 				subListDtl.add(iMap);
 			}
 		}

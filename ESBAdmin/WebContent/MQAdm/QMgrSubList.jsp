@@ -91,7 +91,11 @@ try{
 					while(listCtr<listCount) {
 			%>
 			<tr>
-				<td><%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME")%></td>
+				<td><a
+					href='QMgrSubDtl.jsp?qMgr=<%=qMgr%>&subName=<%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME").toString()%>'
+					> <%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME")%></a>
+				</td>
+
 				<td><%=topicDtls.get(listCtr).get("MQCA_TOPIC_NAME")%></td>
 				<td><%=topicDtls.get(listCtr).get("MQCA_TOPIC_STRING")%></td>
 				<td><%=topicDtls.get(listCtr).get("MQCACF_DESTINATION")%></td>

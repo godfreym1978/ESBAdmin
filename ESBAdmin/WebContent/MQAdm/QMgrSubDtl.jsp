@@ -27,7 +27,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <style type="text/css">
 <%@ include file="../Style.css" %>
 </style>
-<title>Get Topic List</title>
+<title>Subscription Detail</title>
 </head>
 <body>
 <%if(session.getAttribute("UserID")==null){
@@ -51,7 +51,8 @@ try{
 			String qPort = null;
 			String qHost = null;
 			String qChannel = null;
-
+			String subName = request.getParameter("subName");
+			
 			for (String line : FileUtils.readLines(userQMFile)) {
 				if (line.indexOf(qMgr)>0){
 					CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
@@ -70,45 +71,47 @@ try{
 							+File.separator+ "ESBAdmin" + File.separator+qMgr + "." + UserID);
 					
 					PCFCommons test = new PCFCommons();
-					List<Map> topicDtls = test.ListTopicNames(qHost, Integer.parseInt(qPort), qChannel);
-					int listCtr =0;
-					int listCount =topicDtls.size();
+					List<Map> subDtls = test.ListSubStatus(qHost, Integer.parseInt(qPort), subName, qChannel);
+					
 					%>
 
 		<center><b><u>List of Topics in Queue Manager - <%=qMgr %></u></b></center><br>
 		<table border=1 align=center class="gridtable">
-			<tr>
-				<th><b>Topic Name</b></th>
-				<th><b>Topic String</b></th>
-				<th><b>Topic Description</b></th>
-				<th><b>Topic Alter Date</b></th>
-				<th><b>Topic Alter Time</b></th>
-				<th><b>Download MQSC Script</b></th>
-			</tr>
-			<%
-					while(listCtr<listCount) {
-			%>
-			<tr>
-				<td><%=topicDtls.get(listCtr).get("MQCA_TOPIC_NAME")%></td>
-				<td>			 	<a
-					href='QMgrTopicDtl.jsp?qMgr=<%=qMgr%>&topicStr=<%=topicDtls.get(listCtr).get("MQCA_TOPIC_STRING").toString()%>'
-					><%=topicDtls.get(listCtr).get("MQCA_TOPIC_STRING")%></a>
-				</td>
-
-				<td><%=topicDtls.get(listCtr).get("MQCA_TOPIC_DESC")%></td>
-				<td><%=topicDtls.get(listCtr).get("MQCA_ALTERATION_DATE")%></td>
-				<td><%=topicDtls.get(listCtr).get("MQCA_ALTERATION_TIME")%></td>
-				<td>			 	<a
-					href='../DownloadQObject?qMgr=<%=qMgr%>&objType=TOPIC&objName=<%=topicDtls.get(listCtr).get("MQCA_TOPIC_NAME").toString()%>'
-					> Download MQSC Script For This Topic</a>
-				</td>
-
-				<%
-				out.flush();
-				listCtr++;
-					}
-					
-				%>
+			<tr><td>Connection ID</td>
+				<td><%=subDtls.get(0).get("MQBACF_CONNECTION_ID")%></td>
+				</tr>
+				<tr>
+				<td>Durable Sub</td>
+				<td><%=subDtls.get(0).get("MQIACF_DURABLE_SUBSCRIPTION")%></td>
+				</tr>
+				<tr>
+				<td>Default Put Response Type</td>
+				<td><%=subDtls.get(0).get("MQCACF_LAST_MSG_DATE")%></td>
+				</tr>
+				<tr>
+				<td>Def Priority</td>
+				<td><%=subDtls.get(0).get("MQCACF_LAST_MSG_TIME")%></td>
+				</tr>
+				<tr>
+				<td>Durable Sub</td>
+				<td><%=subDtls.get(0).get("MQIACF_PUBLISH_COUNT")%></td>
+				</tr>
+				<tr>
+				<td>Resume Date</td>
+				<td><%=subDtls.get(0).get("MQCA_RESUME_DATE")%></td>
+				</tr>
+				<tr>
+				<td>Resume Time</td>
+				<td><%=subDtls.get(0).get("MQCA_RESUME_TIME")%></td>
+				</tr>
+				<tr>
+				<td>Sub User ID</td>
+				<td><%=subDtls.get(0).get("MQCACF_SUB_USER_ID")%></td>
+				</tr>
+				<tr>
+				<td>Subscription ID</td>
+				<td><%=subDtls.get(0).get("MQBACF_SUB_ID")%></td>
+				</tr>
 		</table>
 		<%
 		}catch(Exception e){
