@@ -53,11 +53,13 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					<th><b>Queue Manager HostName</b></th>
 					<th><b>Queue Manager Name</b></th>
 					<th><b>Queue Manager Port</b></th>
+					<th><b>Queue Manager Channel</b></th>
 				</tr>
 				<tr>
 					<td><%=request.getParameter("qmgrHost")%></td>
 					<td><%=request.getParameter("qmgrName")%></td>
 					<td><%=request.getParameter("qmgrPort")%></td>
+					<td><%=request.getParameter("qmgrChl")%></td>
 				</tr>
 			</table>
 
@@ -71,7 +73,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 									File.separator+session.getAttribute("UserID").toString()+File.separator+"QMEnv.txt");
 		if(!userFile.exists()){
 			try{
-				MQEnvironment.channel = "SYSTEM.DEF.SVRCONN";
+				MQEnvironment.channel = request.getParameter("qmgrChl");
 				MQEnvironment.port = Integer.parseInt(request.getParameter("qmgrPort"));
 				MQEnvironment.hostname = request.getParameter("qmgrHost");
 				
@@ -80,9 +82,12 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
 				userFile.createNewFile();
 				BufferedWriter output = new BufferedWriter(new FileWriter(userFile));
-				output.write(request.getParameter("qmgrHost")+"|"+
-				request.getParameter("qmgrName")+":"+
-				request.getParameter("qmgrPort"));
+
+				output.write(request.getParameter("qmgrHost")+","+
+				request.getParameter("qmgrName")+","+
+				request.getParameter("qmgrPort")+","+
+				request.getParameter("qmgrChl"));
+				
 				output.close();
 				%>
 					<center>
@@ -101,9 +106,10 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
     			<%	
 				}
 		}else{
-			String newQMgrEntry = new String(request.getParameter("qmgrHost")+"|"+
-							request.getParameter("qmgrName")+":"+
-							request.getParameter("qmgrPort"));
+			String newQMgrEntry = new String(request.getParameter("qmgrHost")+","+
+							request.getParameter("qmgrName")+","+
+							request.getParameter("qmgrPort")+","+
+							request.getParameter("qmgrChl"));
 
 			if(FileUtils.readFileToString(userFile).contains(newQMgrEntry)){
 			%>
@@ -114,7 +120,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			<%					
 			}else{
 				try{
-					MQEnvironment.channel = "SYSTEM.DEF.SVRCONN";
+					MQEnvironment.channel = request.getParameter("qmgrChl");
 					MQEnvironment.port = Integer.parseInt(request.getParameter("qmgrPort"));
 					MQEnvironment.hostname = request.getParameter("qmgrHost");
 					MQQueueManager qmgr = new MQQueueManager(request.getParameter("qmgrName"));

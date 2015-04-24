@@ -51,20 +51,23 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					<th><b>Queue Manager HostName</b></th>
 					<th><b>Queue Manager Name</b></th>
 					<th><b>Queue Manager Port</b></th>
+					<th><b>Queue Manager Channel</b></th>
 				</tr>
 				<tr>
 					<td><input type="text" name="qmgrHost" /></td>
 					<td><input type="text" name="qmgrName" /></td>
 					<td><input type="text" name="qmgrPort" /></td>
+					<td><input type="text" name="qmgrChl" /></td>
 				</tr>
 				<tr>
 					<td>Example - esbdev.domain.com</td>
 					<td>Example - QMBRKDEV01</td>
 					<td>Example - 1414</td>
+					<td>Example - SYSTEM.DEF.SVRCONN</td>
 				</tr>
 
 				<tr>
-					<td colspan=3><center><input type="submit" value="Save"/></center></td>
+					<td colspan=4><center><input type="submit" value="Save"/></center></td>
 				</tr>
 			</table>
 	<%	

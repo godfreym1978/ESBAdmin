@@ -17,6 +17,9 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="com.ibm.MQAdmin.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
+<%@ page import="org.apache.commons.csv.*"%>
+<%@ page
+	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
 
 <html>
 <script type="text/javascript">
@@ -55,11 +58,27 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
 		try{ 
 		
-			String qmDtls = session.getAttribute(request.getParameter("qMgr")).toString();				
-			String qMgr = qmDtls.substring(qmDtls.indexOf('|') + 1,qmDtls.indexOf(':'));
-			String qPort = qmDtls.substring(qmDtls.indexOf(':') + 1,qmDtls.length());
-			String qHost = qmDtls.substring(0, qmDtls.indexOf('|'));
 			String UserID = session.getAttribute("UserID").toString();
+			File userQMFile = new File(
+							System.getProperty("catalina.base")
+									+ File.separator+"ESBAdmin"+File.separator+UserID+File.separator+"QMEnv.txt");
+			String qMgr = request.getParameter("qMgr");
+			String qPort = null;
+			String qHost = null;
+			String qChannel = null;
+
+			for (String line : FileUtils.readLines(userQMFile)) {
+				if (line.indexOf(qMgr)>0){
+					CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+					
+					for (CSVRecord csvRecord : parser) {
+						qHost = csvRecord.get(0);
+						qPort = csvRecord.get(2);
+						qChannel = csvRecord.get(3);
+						}							
+				}
+			}
+		
 			Util newUtil = new Util();
 		
 			PCFCommons newPFCCM = new PCFCommons();
