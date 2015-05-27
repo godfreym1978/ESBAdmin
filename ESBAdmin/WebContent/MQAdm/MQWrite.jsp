@@ -80,7 +80,7 @@ if(session.getAttribute("UserID")==null){
 				</tr>
 				<tr>
 					<td>Message</td>
-					<td><c:out value="<%=FileUtils.readFileToString(outfile)%>" /></td>
+					<td><xmp><%=FileUtils.readFileToString(outfile)%></xmp></td>
 				</tr>
 			</table>
 			<%
