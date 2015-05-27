@@ -70,11 +70,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			<tr>
 				<td><a
 					href='../DownloadMsgFromQueue?qMgr=<%=qMgr%>&qName=<%=qName%>&message=<%=alQueueList.get(inCrement + 1)%>'><%=inMsgCtr + 1%></a></td>
-				<%if(alQueueList.get(inCrement).length()<210){ %>	
-				<td><c:out value="<%=alQueueList.get(inCrement)%>" /></td>
-				<%}else{ %>
-				<td><c:out value="<%=alQueueList.get(inCrement).substring(0, 200)%>" /></td>
-				<%}%>
+				<td><xmp><%=alQueueList.get(inCrement)%></xmp></td>
 				<td><%=alQueueList.get(inCrement + 2)%></td>
 				<%
 					inCrement = inCrement + 3;
@@ -85,7 +81,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		</table>
 		<center><button type="button" onClick="window.location.reload();">Refresh</button></center>
 		<%
-		
 			} else {
 		%>
 		<br> <u>There are no messages on this queue</u>
@@ -94,6 +89,5 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			}
 		System.gc();
 		%>
-	
 </body>
 </html>
