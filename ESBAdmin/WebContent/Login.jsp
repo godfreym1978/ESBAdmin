@@ -163,6 +163,9 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					<a href='DPAdm/DPEnvDtl.jsp' target='dynamic'>Datapower Environment</a>
 					<br>
 
+					<a href='DPAdm/DPDevices.jsp' target='dynamic'>Datapower Devices</a>
+					<br>
+
 					<%if(UserID.equals("admin")){%>
 
 					<HR>
