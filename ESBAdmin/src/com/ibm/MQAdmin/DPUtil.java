@@ -224,7 +224,6 @@ public class DPUtil {
 
 		Map iMap = new HashMap();
 		try {
-			
 			// Get an instance of the manager. All subsequent calls to
 			// getInstance will return the same
 			// instance since the manager is a singleton.
@@ -242,7 +241,6 @@ public class DPUtil {
 			ManagedSet ms = manager.getManagedSet("mgSet");
 			Device devices[] = ms.getDeviceMembers();
 			
-			/*Work on this*/
 			List<String> fileListDtl = new ArrayList<String>();
 			List<String> configListDtl = new ArrayList<String>();
 
@@ -250,13 +248,10 @@ public class DPUtil {
 				if(devices[deviceCtr].getHostname().equals(dpHostName)){
 					RuntimeService rs[] = devices[deviceCtr].getManagedDomain(domainName).getServices();
 					for (int serviceCtr = 0; serviceCtr < rs.length; serviceCtr ++) {
-						
 						if(rs[serviceCtr].getName().equalsIgnoreCase(svcName)){
-							
 							iMap = new HashMap();
 							ReferencedObjectCollection refObjColl = rs[serviceCtr]
 									.getReferencedObjectsAndFiles();
-
 							try {
 								StringCollection refFiles = refObjColl
 										.getReferencedFiles();
@@ -265,7 +260,6 @@ public class DPUtil {
 											.toString());
 								}
 								iMap.put("FileList", fileListDtl);
-								ServiceDtl.add(iMap);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -277,15 +271,12 @@ public class DPUtil {
 											.getName());
 								}
 								iMap.put("configListDtl", configListDtl);
-								ServiceDtl.add(iMap);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-
 							iMap.put("AdminStatus", rs[serviceCtr].getAdminStatus());
 							ServiceDtl.add(iMap);
 						}
-						/*Work on this*/
 					}
 				}
 			}
