@@ -61,7 +61,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
 	<%	
 		DPUtil newDPUtil = new DPUtil();
-		List<Map> deviceListDtl = newDPUtil.getServices();
+		List<Map> deviceListDtl = newDPUtil.getDPEnvironment();
 	    List<String> fileListDtl ;
 		List<String> configListDtl ;
 
