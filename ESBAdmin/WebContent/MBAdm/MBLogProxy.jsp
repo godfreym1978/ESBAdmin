@@ -19,6 +19,8 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="com.ibm.MQAdmin.*"%>
 <%@ page import="com.ibm.broker.config.proxy.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="org.apache.commons.csv.*"%>
+
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
 
@@ -34,19 +36,16 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
 <%if(session.getAttribute("UserID")==null){
 %>
-
 		<center>
 		Looks like you are not logged in.<br>
 		
 		Please login with a valid user id <a href='../Index.html'><b>Here</b> </a>
 		</center>
-
 <%	
 }else{
 %>
 <center><button type="button" onClick="window.location.reload();">Refresh</button></center>
 <%
-
 	Util newUtil = new Util();
 	MBCommons newMBCmn = new MBCommons();
 
@@ -58,10 +57,13 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	BrokerProxy brkProxy  = null;
 	
 	for (String line : FileUtils.readLines(userFile)) {
-		if(line.substring(line.indexOf(";")+1,line.indexOf("|")).equals(brokerName)){
-		hostName = line.substring(line.indexOf("|")+1, line.indexOf(":"));
-		portNum = Integer.parseInt(line.substring(line.indexOf(":")+1,line.length()));
-		brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
+		CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+		for (CSVRecord csvRecord : parser) {
+			if(csvRecord.get(1).equals(brokerName)){
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
+				}
 		}
 	}
 
@@ -102,8 +104,7 @@ System.gc();
 lp.clear();
 brkProxy.disconnect();
 }
-	
- %>
+%>
  </table>
 </body>
 </html>

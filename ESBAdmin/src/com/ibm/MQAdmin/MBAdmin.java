@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -49,38 +52,44 @@ public class MBAdmin extends HttpServlet {
 		// TODO Auto-generated method stub
 		// ServletContext ctx = getServletContext();
 		try {
+			HttpSession session = request.getSession(true);
 			MBCommons newMBComm = new MBCommons();
 			String action = request.getParameter("action").toString();
-			HttpSession session = request.getSession(true);
+			String userID = session.getAttribute("UserID").toString();
+			
 			File userFile = new File(System.getProperty("catalina.base")
 					+ File.separator + "ESBAdmin" + File.separator
-					+ session.getAttribute("UserID").toString()
+					+ userID
 					+ File.separator + "MBEnv.txt");
 			String env = null;
 
+			
 			for (String line : FileUtils.readLines(userFile)) {
-				env = line.substring(0, line.indexOf(";"));
-				break;
+				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+				for (CSVRecord csvRecord : parser) {
+						env = csvRecord.get(0);
+						break;
+				}							
 			}
-
-			if (session.getAttribute("UserID").toString().indexOf("admin") > -1
+			
+			if (userID.indexOf("admin") > -1
 					|| (env.equals("DEV") || env.equals("QA"))
-					&& session.getAttribute("UserID").toString().indexOf("dev") > -1) {
+					&& userID.indexOf("dev") > -1) {
 				if (action.indexOf("EG") == 0) {
 					String brkName = request.getParameter("brkName").toString();
 					String egName = request.getParameter("egName").toString();
 					if (action.indexOf("start") > 0) {
 						System.out.println("Starting Execution Group - "
 								+ egName + " /Broker - " + brkName);
-						newMBComm.StartEG(brkName, egName);
+						newMBComm.StartEG(brkName, egName, userID);
 					} else if (action.indexOf("stop") > 0) {
 						System.out.println("Stopping Execution Group - "
 								+ egName + " /Broker - " + brkName);
-						newMBComm.StopEG(brkName, egName);
+						newMBComm.StopEG(brkName, egName, userID);
 					} else {
 						System.out.println("Deleting Execution Group - "
 								+ egName + " /Broker - " + brkName);
-						newMBComm.DeleteEG(brkName, egName);
+						newMBComm.DeleteEG(brkName, egName, userID);
 					}
 				} else if (action.indexOf("MF") == 0) {
 					String brkName = request.getParameter("brkName").toString();
@@ -90,17 +99,17 @@ public class MBAdmin extends HttpServlet {
 						System.out.println("Starting MF - " + mfName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.StartMsgFlow(brkName, egName, mfName);
+						newMBComm.StartMsgFlow(brkName, egName, mfName, userID);
 					} else if (action.indexOf("stop") > 0) {
 						System.out.println("Stopping MF - " + mfName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.StopMsgFlow(brkName, egName, mfName);
+						newMBComm.StopMsgFlow(brkName, egName, mfName, userID);
 					} else {
 						System.out.println("Deleting MF - " + mfName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.DeleteEGObject(brkName, egName, mfName);
+						newMBComm.DeleteEGObject(brkName, egName, mfName, userID);
 					}
 				} else if (action.indexOf("APPL") == 0) {
 
@@ -112,17 +121,17 @@ public class MBAdmin extends HttpServlet {
 						System.out.println("Starting Application - " + applName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.StartApplication(brkName, egName, applName);
+						newMBComm.StartApplication(brkName, egName, applName, userID);
 					} else if (action.indexOf("stop") > 0) {
 						System.out.println("Stopping Application - " + applName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.StopApplication(brkName, egName, applName);
+						newMBComm.StopApplication(brkName, egName, applName, userID);
 					} else {
 						System.out.println("Deleting Application - " + applName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.DeleteEGObject(brkName, egName, applName);
+						newMBComm.DeleteEGObject(brkName, egName, applName, userID);
 					}
 				} else if (action.indexOf("LIB") == 0) {
 
@@ -132,12 +141,11 @@ public class MBAdmin extends HttpServlet {
 					System.out.println("Deleting Library - " + libName
 							+ "/ Execution Group - " + egName + " /Broker - "
 							+ brkName);
-					newMBComm.DeleteEGObject(brkName, egName, libName);
+					newMBComm.DeleteEGObject(brkName, egName, libName, userID);
 				}
 
 			}
 
-			// response.sendRedirect("/ESBAdmin/MBAdm/MBEnvAdm.jsp");
 			response.sendRedirect(request.getHeader("referer"));
 
 		} catch (Exception e) {

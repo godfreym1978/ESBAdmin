@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 
 import com.ibm.broker.config.proxy.ApplicationProxy;
@@ -163,18 +166,17 @@ public class MBCommons {
 		return dr.toString();
 	}
 
-	public String getBrkParameters(String brkName)
+	public String getBrkParameters(String brkName, String userID)
 			throws ConfigManagerProxyLoggedException, NumberFormatException,
 			IOException {
-
+		
 		File brkFile = new File(System.getProperty("catalina.base")
-				+ File.separator + "ESBAdmin" + File.separator + "MBEnv.txt");
-
+				+ File.separator + "ESBAdmin" + File.separator + userID + File.separator +   
+				"MBEnv.txt");
 		String brkParameters = null;
 		for (String line : FileUtils.readLines(brkFile)) {
-			if (line.indexOf(brkName) > -1) {
-				brkParameters = line.substring(line.indexOf("|") + 1,
-						line.length());
+			if (line.indexOf(brkName)>0){
+				brkParameters = line;
 				break;
 			}
 		}
@@ -190,15 +192,18 @@ public class MBCommons {
 	 * @throws NumberFormatException
 	 * @throws ConfigManagerProxyPropertyNotInitializedException
 	 */
-	public String StartEG(String brkName, String egName) {
+	public String StartEG(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -223,15 +228,19 @@ public class MBCommons {
 	 * @param eg
 	 *            Selected ExecutionGroupProxy object
 	 */
-	public String StopEG(String brkName, String egName) {
+	public String StopEG(String brkName, String egName, String userID) {
+		
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -242,23 +251,26 @@ public class MBCommons {
 
 			egProxy.stop();
 			brkProxy.disconnect();
-			return "EG Started successfully";
+			return "Execution Group "+egName+" Stopped successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error while starting the eg";
+			return "Error while stopping the Execution Group"+egName;
 		}
 
 	}
 
-	public String DeleteEG(String brkName, String egName) {
+	public String DeleteEG(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -266,10 +278,10 @@ public class MBCommons {
 			brkProxy = BrokerProxy.getInstance(bcp);
 			brkProxy.deleteExecutionGroup(egName);
 			brkProxy.disconnect();
-			return "EG Started successfully";
+			return "Execution Group "+egName+" Deleted successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error while starting the eg";
+			return "Error while deleting the Execution Group"+egName;
 		}
 
 	}
@@ -281,18 +293,22 @@ public class MBCommons {
 	 *            Selected ApplicationProxy object
 	 */
 	public String StartApplication(String brkName, String egName,
-			String applName) {
+			String applName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
+
 
 			brkProxy = BrokerProxy.getInstance(bcp);
 			ExecutionGroupProxy egProxy = brkProxy
@@ -300,10 +316,10 @@ public class MBCommons {
 			ApplicationProxy applnProxy = egProxy.getApplicationByName(applName);
 			applnProxy.start();
 			brkProxy.disconnect();
-			return "Application Started successfully";
+			return "Application "+applName+" Started successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error occured while starting";
+			return "Error occured while starting Application "+applName;
 		}
 	}
 
@@ -313,15 +329,18 @@ public class MBCommons {
 	 * @param appl
 	 *            Selected ApplicationProxy object
 	 */
-	public String StopApplication(String brkName, String egName, String applName) {
+	public String StopApplication(String brkName, String egName, String applName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -332,10 +351,11 @@ public class MBCommons {
 			ApplicationProxy applnProxy = egProxy.getApplicationByName(applName);
 			applnProxy.stop();
 			brkProxy.disconnect();
-			return "Application Stopped successfully";
+			return "Application "+applName+" Stopped successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error occured while stopping";
+			return "Error occured while stopping Application "+applName;
+
 		}
 
 	}
@@ -348,15 +368,18 @@ public class MBCommons {
 	 *            The Broker, Execution Group or flow whose flow(s) are to be
 	 *            started.
 	 */
-	public String StartMsgFlow(String brkName, String egName, String mfName) {
+	public String StartMsgFlow(String brkName, String egName, String mfName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -366,10 +389,10 @@ public class MBCommons {
 			MessageFlowProxy mfProxy = egProxy.getMessageFlowByName(mfName);
 			mfProxy.start();
 			brkProxy.disconnect();
-			return "MessageFlow Started successfully";
+			return "Message Flow "+mfName+" Started successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error occured while starting";
+			return "Error occured while starting "+mfName;
 		}
 
 	}
@@ -382,15 +405,18 @@ public class MBCommons {
 	 *            The broker, execution group or message flow whose flows are to
 	 *            be stopped.
 	 */
-	public String StopMsgFlow(String brkName, String egName, String mfName) {
+	public String StopMsgFlow(String brkName, String egName, String mfName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -400,24 +426,28 @@ public class MBCommons {
 			MessageFlowProxy mfProxy = egProxy.getMessageFlowByName(mfName);
 			mfProxy.stop();
 			brkProxy.disconnect();
-			return "MessageFlow Stopped successfully";
+			return "MessageFlow "+mfName+" Stopped successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error occured while stopping";
+			return "Error occured while stopping "+mfName;
 		}
 
 	}
 
-	public String DeleteEGObject(String brkName, String egName, String objName) {
+	public String DeleteEGObject(String brkName, String egName, String objName, String userID) {
 		BrokerProxy brkProxy = null;
 
 		try {
 
-			String brkParameters = getBrkParameters(brkName);
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -425,7 +455,6 @@ public class MBCommons {
 
 			ExecutionGroupProxy egProxy = brkProxy
 					.getExecutionGroupByName(egName);
-			System.out.println("eggroup" + egProxy);
 
 			egProxy.deleteDeployedObjectsByName(new String[] { objName }, 0);
 			brkProxy.disconnect();
@@ -446,15 +475,18 @@ public class MBCommons {
 	 *            The Broker, Execution Group or flow whose flow(s) are to be
 	 *            started.
 	 */
-	public String StartEGAll(String brkName, String egName) {
+	public String StartEGAll(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -480,16 +512,19 @@ public class MBCommons {
 	 * @param object
 	 *            The broker, execution group or message flow whose flows are to
 	 *            be stopped.
-	 */
-	public String StopEGAll(String brkName, String egName) {
+2	 */
+	public String StopEGAll(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName);
-
-			String hostName = brkParameters.substring(
-					brkParameters.indexOf("|") + 1, brkParameters.indexOf(":"));
-			int portNum = Integer.parseInt(brkParameters.substring(
-					brkParameters.indexOf(":") + 1, brkParameters.length()));
+			String brkParameters = getBrkParameters(brkName, userID);
+			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
+			String hostName = new String();
+			int portNum =0;
+			
+			for (CSVRecord csvRecord : parser) {
+				hostName = csvRecord.get(2);
+				portNum = Integer.parseInt(csvRecord.get(3));
+				}							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");

@@ -19,6 +19,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="java.io.*"%>
 <%@ page import="com.ibm.broker.config.proxy.*"%>
 <%@ page import="java.util.*"%>
+<%@ page import="org.apache.commons.csv.*"%>
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
 
@@ -49,10 +50,9 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 									File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnv.txt");
 		if (userFile.exists()){
 			
-			System.out.println(userFile.exists());
-						String env = null;		
+			String env = null;		
 			String hostName = null;
-			int portNum ;
+			int portNum =0;
 			BrokerProxy brkProxy  = null;
 			ArrayList<ExecutionGroupProxy> egProxy = null;
 			int egCtr;
@@ -70,14 +70,15 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				</tr>
 			<%
 			for (String line : FileUtils.readLines(userFile)) {
-				env = line.substring(0,line.indexOf(";"));
-				hostName = line.substring(line.indexOf("|")+1, line.indexOf(":"));
-				portNum = Integer.parseInt(line.substring(line.indexOf(":")+1,line.length()));
+				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+				for (CSVRecord csvRecord : parser) {
+					env = csvRecord.get(0);
+					hostName = csvRecord.get(2);
+					portNum = Integer.parseInt(csvRecord.get(3));
+					}							
 				try{
-					//brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
 					BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 							hostName, portNum, "");
-							
 					brkProxy = BrokerProxy.getInstance(bcp);
 					brkProxy.getName();
 			%>
