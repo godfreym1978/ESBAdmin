@@ -19,6 +19,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="java.util.*" %>
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
+<%@ page import="org.apache.commons.csv.*"%>
 
 <html>
 <head>
@@ -88,9 +89,12 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
 		for (newQMCtr=0;newQMCtr<qMgr.length;newQMCtr++){
 			FileUtils.writeStringToFile(userQMFile, qMgr[newQMCtr].toString().trim()+"\n", true);
-			qHost = qMgr[newQMCtr].substring(0, qMgr[newQMCtr].indexOf('|'));
-			qMgrName = qMgr[newQMCtr].substring(qMgr[newQMCtr].indexOf('|') + 1,qMgr[newQMCtr].indexOf(':'));
-		
+			CSVParser parser = CSVParser.parse(qMgr[newQMCtr].toString().trim(), CSVFormat.RFC4180);
+					
+			for (CSVRecord csvRecord : parser) {
+				qHost = csvRecord.get(0);
+				qMgrName = csvRecord.get(1);
+			}							
 				%>
 				<center>Queue Manager - <b><%=qMgrName%></b> on Host - <b><%=qHost%></b> - is setup for administration for user <%=UsrID%><br></center>
 				<%
@@ -102,9 +106,13 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	
 		for (newMBCtr=0;newMBCtr<broker.length;newMBCtr++){
 			FileUtils.writeStringToFile(userBrkFile, broker[newMBCtr].toString().trim()+"\n", true);
-			mbHost = broker[newMBCtr].substring(0, broker[newMBCtr].indexOf(':'));
-			mbQMgrPort = broker[newMBCtr].substring(broker[newMBCtr].indexOf(':') + 1,broker[newMBCtr].length());
-		
+			
+			CSVParser parser = CSVParser.parse(broker[newMBCtr].toString().trim(), CSVFormat.RFC4180);
+			
+			for (CSVRecord csvRecord : parser) {
+				mbHost = csvRecord.get(1);
+				mbQMgrPort = csvRecord.get(3);
+			}							
 				%>
 				<center>Broker Host - <b><%=mbHost%></b>  with Queue Manager port <%=mbQMgrPort%>- is setup for administration for user <%=UsrID%><br></center>
 				<%

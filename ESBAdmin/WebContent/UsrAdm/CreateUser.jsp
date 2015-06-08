@@ -16,7 +16,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="com.ibm.MQAdmin.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="java.sql.*"%>
+<%@ page import="org.apache.commons.csv.*"%>
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
 <html>
@@ -51,8 +51,16 @@ if (session.getAttribute("UserID") != null&&session.getAttribute("UserID").toStr
 			</tr>
 			<%
 			for (String line : FileUtils.readLines(qmFile)) {
-				String qHost = line.substring(0, line.indexOf('|'));
-				String qMgr = line.substring(line.indexOf('|') + 1,line.indexOf(':'));
+				String qMgr = null;
+				String qHost = null;
+
+				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+						
+				for (CSVRecord csvRecord : parser) {
+					qHost = csvRecord.get(0);
+					qMgr = csvRecord.get(1);
+				}							
+			
 			%>
 			<tr>
 				<td>Queue Manager - <%=qMgr%> , Host - <%=qHost%></td>
@@ -68,9 +76,16 @@ if (session.getAttribute("UserID") != null&&session.getAttribute("UserID").toStr
 			<%
 
 			for (String line : FileUtils.readLines(mbFile)) {
-				String env = line.substring(0,line.indexOf(";"));
-				String mbHost = line.substring(line.indexOf("|")+1, line.indexOf(":"));
-				String mbMgr = line.substring(line.indexOf(':') + 1,line.length());
+				String env = null;
+				String mbHost = null;
+				String mbMgr = null;
+				
+				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+				for (CSVRecord csvRecord : parser) {
+					env = csvRecord.get(0);
+					mbHost = csvRecord.get(2);
+					mbMgr = csvRecord.get(3);
+					}							
 			%>
 			<tr>
 				<td>Environment - <%=env%> , Host - <%=mbHost%> , QM Port <%=mbMgr%></td>
@@ -93,6 +108,7 @@ if (session.getAttribute("UserID") != null&&session.getAttribute("UserID").toStr
 			<center>
 				<%
 }
+
 		%>
 			
 </body>
