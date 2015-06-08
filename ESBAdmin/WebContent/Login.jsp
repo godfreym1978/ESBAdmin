@@ -37,7 +37,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ include file="Style.css" %>
 </style>
 <title>Login Page</title>
-
 </head>
 <body>
 	<%
@@ -59,121 +58,107 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				File userFile = new File(
 						System.getProperty("catalina.base")
 								+ File.separator+"ESBAdmin"+File.separator+ session.getAttribute("UserID").toString()+File.separator+"QMEnv.txt");
-
 				if (userFile.exists()){
-				
 					if(UserID.equals("admin")){%>	
 					<a href='MQAdm/QMgrSetup.jsp'
 										target='dynamic'>Setup Queue Manager Environment</a><br>
 					<%}
-						Map qMgrDtlMap = new HashMap();
-						String QMgr = null;
-						String Host = null;							
-						for (String line : FileUtils.readLines(userFile)) {
-							CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-							String qMgr = null;
-							String qMgrHost = null;
+					Map qMgrDtlMap = new HashMap();
+					String QMgr = null;
+					String Host = null;							
+					for (String line : FileUtils.readLines(userFile)) {
+						CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+						String qMgr = null;
+						String qMgrHost = null;
 						
-							for (CSVRecord csvRecord : parser) {
-								qMgrHost = csvRecord.get(0);
-								qMgr = csvRecord.get(1);
-							}
-										
+						for (CSVRecord csvRecord : parser) {
+							qMgrHost = csvRecord.get(0);
+							qMgr = csvRecord.get(1);
+						}
 					%>
-
-							<a href="javascript:unhide('<%=qMgr%>');"> 
-														<b>Queue Manager - <%=qMgr%> / 
-														Host - <%=qMgrHost%>
-														
-							</b><br>
-							</a>
-							<div id="col2">
-								<div id="<%=qMgr%>" class="hidden">
-										<a
-											href='MQAdm/UserQMgrQList.jsp?qMgr=<%=qMgr%>'
-											target='dynamic'> Queues for Admin</a><br>
-										<a
-											href='MQAdm/QueueList.jsp?qMgr=<%=qMgr%>'
-											target='dynamic'> Qs in QMgr</a><br>
-										<%if(UserID.equals("admin")){%>	
-										<a
-											href='MQAdm/ChannelList.jsp?qMgr=<%=qMgr%>'
-											target='dynamic'> Channels in QMgr</a><br>
-										<a
-											href='MQAdm/ListenerList.jsp?qMgr=<%=qMgr%>'
-											target='dynamic'> Listeners in QMgr</a><br>
-	
-										<a
-											href='MQAdm/CreateObject.jsp?qMgr=<%=qMgr%>'
-											target='dynamic'> Create Objects in QMgr</a><br>
-										<%}%>	
-											
-										<%if(UserID.equals("admin") || UserID.indexOf("dev")==0){ %>	
-	
-										<a
-											href='MQAdm/QMgrTopicList.jsp?qMgr=<%=qMgr%>'
-											target='dynamic'> Topics in QMgr </a><br> 
-										<a
-											href='MQAdm/QMgrSubList.jsp?qMgr=<%=qMgr%>'
-											target='dynamic'> Subscriptions in QMgr </a><br> 
-										<a
-											href='MQAdm/MQDataMove.jsp?qMgr=<%=qMgr%>'
-											target='dynamic'> Data Move </a><br>
-	
-										<a
-											href='DownloadQMgr?qMgr=<%=qMgr%>'
-											target='dynamic'> Download QMgr </a><br>
-	
-										<%} %>	
-								</div>
+						<a href="javascript:unhide('<%=qMgr%>');"> 
+													<b>Queue Manager - <%=qMgr%> / 
+													Host - <%=qMgrHost%>
+						</b><br>
+						</a>
+						<div id="col2">
+							<div id="<%=qMgr%>" class="hidden">
+								<a
+									href='MQAdm/UserQMgrQList.jsp?qMgr=<%=qMgr%>'
+									target='dynamic'> Queues for Admin</a><br>
+								<a
+									href='MQAdm/QueueList.jsp?qMgr=<%=qMgr%>'
+									target='dynamic'> Qs in QMgr</a><br>
+								<%if(UserID.equals("admin")){%>	
+									<a
+										href='MQAdm/ChannelList.jsp?qMgr=<%=qMgr%>'
+										target='dynamic'> Channels in QMgr</a><br>
+									<a
+										href='MQAdm/ListenerList.jsp?qMgr=<%=qMgr%>'
+										target='dynamic'> Listeners in QMgr</a><br>
+									<a
+										href='MQAdm/CreateObject.jsp?qMgr=<%=qMgr%>'
+										target='dynamic'> Create Objects in QMgr</a><br>
+								<%}%>	
+								<%if(UserID.equals("admin") || UserID.indexOf("dev")==0){ %>	
+									<a
+										href='MQAdm/QMgrTopicList.jsp?qMgr=<%=qMgr%>'
+										target='dynamic'> Topics in QMgr </a><br> 
+									<a
+										href='MQAdm/QMgrSubList.jsp?qMgr=<%=qMgr%>'
+										target='dynamic'> Subscriptions in QMgr </a><br> 
+									<a
+										href='MQAdm/MQDataMove.jsp?qMgr=<%=qMgr%>'
+										target='dynamic'> Data Move </a><br>
+									<a
+										href='DownloadQMgr?qMgr=<%=qMgr%>'
+										target='dynamic'> Download QMgr </a><br>
+								<%} %>	
+							</div>
 						</div>
 				<HR>
-
-					<%
-						}
-					}else{
-					%>
-						<%if(UserID.equals("admin")){%>	
+				<%
+					}
+				}else{
+				%>
+					<%if(UserID.equals("admin")){%>	
 						<a
 							href='MQAdm/QMgrSetup.jsp'
 							target='dynamic'>Setup Queue Manager Environment</a><br>
-						<%}%>
-					
-					No Queue Manager has been set up for you.
-					<%
-						}
-					%>
-					
-					
-					<h4>Message Broker Environment</h4>
-					<a href='MBAdm/MBEnvSetup.jsp'  target='dynamic'>Setup Message Brokers Environment</a>
-					<br>
+					<%}%>
+				No Queue Manager has been set up for you.
+				<%
+					}
+				%>
+				<h4>Message Broker Environment</h4>
+				<%if(UserID.equals("admin")){%>	
+				<a href='MBAdm/MBEnvSetup.jsp'  target='dynamic'>Setup Message Brokers Environment</a>
+				<br>
+				<%}%>
 									
-					<a href='MBAdm/MBEnvDtl.jsp' target='dynamic'>Message Brokers Environment</a>
-					<br>
+				<a href='MBAdm/MBEnvDtl.jsp' target='dynamic'>Message Brokers Environment</a>
+				<br>
 <!-- 
 					<a href='MBAdm/AuditQuery.jsp' target='dynamic'>Check ESB Audit</a>
 					<br>
  -->
-					<HR>
-					<h4>Datapower Environment</h4>
+				<HR>
+				<h4>Datapower Environment</h4>
+				<%if(UserID.equals("admin")){%>	
 					<a href='DPAdm/DPEnvSetup.jsp'  target='dynamic'>Setup Datapower Environment</a>
 					<br>
+				<%}%>
 									
-					<a href='DPAdm/DPEnvDtl.jsp' target='dynamic'>Datapower Environment</a>
-					<br>
+				<a href='DPAdm/DPEnvDtl.jsp' target='dynamic'>Datapower Environment</a>
+				<br>
+				<a href='DPAdm/DPDevices.jsp' target='dynamic'>Datapower Devices</a>
+				<br>
 
-					<a href='DPAdm/DPDevices.jsp' target='dynamic'>Datapower Devices</a>
-					<br>
-
-					<%if(UserID.equals("admin")){%>
-
+				<%if(UserID.equals("admin")){%>
 					<HR>
 					<h4>User Management</h4>
-
 						<a href='UsrAdm/CreateUser.jsp' target='dynamic'>Create Users for this Site</a>
 						<br>
-
 						<a href='UsrAdm/UserList.jsp' target='dynamic'>List of Users for this Site</a>
 						<br>
 					<%}%>
@@ -189,18 +174,14 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
  -->
 					<HR>
 					<h4>User Access </h4>
-
 					<a href='UsrAdm/ChangePwd.jsp' target='dynamic'>Change Password</a>
 					<br>
-					
 					<a href='Logout.jsp' target='_top'>Logout from this site</a>
 					<br>
-		
-				<%
-					}
-				} catch(FileNotFoundException ex){
-				%>
-					
-			<%}%>
+			<%
+				}
+			} catch(FileNotFoundException ex){
+			%>
+		<%}%>
 </body>
 </html>
