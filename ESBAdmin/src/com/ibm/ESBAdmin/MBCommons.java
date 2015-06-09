@@ -11,7 +11,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 */
 /********************************************************************************/
 
-package com.ibm.MQAdmin;
+package com.ibm.ESBAdmin;
 
 import java.io.File;
 import java.io.IOException;

@@ -11,7 +11,7 @@
  */
 /********************************************************************************/
 
-package com.ibm.MQAdmin;
+package com.ibm.ESBAdmin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
