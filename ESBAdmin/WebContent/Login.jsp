@@ -55,30 +55,32 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				<HR>			
 				<h4>WebSphere MQ Environment</h4>
 				<%
+				if(UserID.equals("admin")){%>	
+				<a href='MQAdm/QMgrSetup.jsp'
+									target='dynamic'>Setup/Change Queue Manager Environment</a><br>
+				<%}
+
 				File userFile = new File(
 						System.getProperty("catalina.base")
-								+ File.separator+"ESBAdmin"+File.separator+ session.getAttribute("UserID").toString()+File.separator+"QMEnv.txt");
+								+ File.separator+"ESBAdmin"+File.separator+ session.getAttribute("UserID").toString()+File.separator+"MQEnvironment.xml");
 				if (userFile.exists()){
-					if(UserID.equals("admin")){%>	
-					<a href='MQAdm/QMgrSetup.jsp'
-										target='dynamic'>Setup Queue Manager Environment</a><br>
-					<%}
 					Map qMgrDtlMap = new HashMap();
-					String QMgr = null;
-					String Host = null;							
-					for (String line : FileUtils.readLines(userFile)) {
-						CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-						String qMgr = null;
-						String qMgrHost = null;
-						
-						for (CSVRecord csvRecord : parser) {
-							qMgrHost = csvRecord.get(0);
-							qMgr = csvRecord.get(1);
-						}
+					
+					
+					String qMgr = null;
+					String qHost = null;
+					String qChannel = null;
+
+					MQAdminUtil newMQAdUtil = new MQAdminUtil();
+					List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+
+					for (int i=0; i<MQList.size(); i++) {
+							qMgr = MQList.get(i).get("QMName").toString();
+							qHost = MQList.get(i).get("QMHost").toString();
 					%>
 						<a href="javascript:unhide('<%=qMgr%>');"> 
 													<b>Queue Manager - <%=qMgr%> / 
-													Host - <%=qMgrHost%>
+													Host - <%=qHost%>
 						</b><br>
 						</a>
 						<div id="col2">
@@ -121,11 +123,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					}
 				}else{
 				%>
-					<%if(UserID.equals("admin")){%>	
-						<a
-							href='MQAdm/QMgrSetup.jsp'
-							target='dynamic'>Setup Queue Manager Environment</a><br>
-					<%}%>
 				No Queue Manager has been set up for you.
 				<%
 					}

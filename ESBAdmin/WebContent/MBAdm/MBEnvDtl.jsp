@@ -45,9 +45,15 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	}else{
 		String UserID = session.getAttribute("UserID").toString();
 		Util newUtil = new Util();
-		
+		/*
 		File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+
 									File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnv.txt");
+		*/
+		
+		File userFile = new File(System.getProperty("catalina.base")
+				+ File.separator + "ESBAdmin" + File.separator + UserID + File.separator +   
+				"MBEnvironment.xml");
+
 		if (userFile.exists()){
 			
 			String env = null;		
@@ -69,13 +75,15 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					<th><b>Broker Logs</b></th>
 				</tr>
 			<%
-			for (String line : FileUtils.readLines(userFile)) {
-				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-				for (CSVRecord csvRecord : parser) {
-					env = csvRecord.get(0);
-					hostName = csvRecord.get(2);
-					portNum = Integer.parseInt(csvRecord.get(3));
-					}							
+			MBCommons newMBCommons = new MBCommons(); 
+			List<Map> MBList = newMBCommons.getMBEnv(UserID);
+			
+			for (int i=0; i<MBList.size(); i++) {
+
+				env = MBList.get(i).get("MBEnv").toString();
+				hostName = MBList.get(i).get("MBHost").toString();
+				portNum = Integer.parseInt(MBList.get(i).get("MBPort").toString());
+
 				try{
 					BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 							hostName, portNum, "");

@@ -22,56 +22,48 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="org.apache.commons.csv.*"%>
 
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<style type="text/css">
-<%@ include file="../Style.css" %>
-</style>
-<title>Queue Details</title>
-</head>
+	<head>
+		<meta http-equiv="Content-Style-Type" content="text/css">
+		<style type="text/css">
+			<%@ include file="../Style.css" %>
+		</style>
+		<title>Queue Details</title>
+	</head>
 <body>
-<%if(session.getAttribute("UserID")==null){
-%>
-
-		<center>
-		Looks like you are not logged in.<br>
-		
-		Please login with a valid user id <a href='../Index.html'><b>Here</b> </a>
-		</center>
-
-<%	
+<%
+String UserID = session.getAttribute("UserID").toString();
+if(UserID==null){%>	<center>
+		Looks like you are not logged in.<br> Please login with a valid
+		user id <a href='../Index.html'><b>Here</b> </a>
+	</center>
+	<%	
 }else{
+	String qMgr = request.getParameter("qMgr");
+	String qPort = null;
+	String qHost = null;
+	String qChannel = null;
 
-			String UserID = session.getAttribute("UserID").toString();
-			File userQMFile = new File(
-							System.getProperty("catalina.base")
-									+ File.separator+"ESBAdmin"+File.separator+UserID+File.separator+"QMEnv.txt");
-			String qMgr = request.getParameter("qMgr");
-			String qPort = null;
-			String qHost = null;
-			String qChannel = null;
+	MQAdminUtil newMQAdUtil = new MQAdminUtil();
+	List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
 
-			for (String line : FileUtils.readLines(userQMFile)) {
-				if (line.indexOf(qMgr)>0){
-					CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-					
-					for (CSVRecord csvRecord : parser) {
-						qHost = csvRecord.get(0);
-						qPort = csvRecord.get(2);
-						qChannel = csvRecord.get(3);
-						}							
-				}
-			}
+	for (int i=0; i<MQList.size(); i++) {
+		if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+			qHost = MQList.get(i).get("QMHost").toString();
+			qPort = MQList.get(i).get("QMPort").toString();
+			qChannel = MQList.get(i).get("QMChannel").toString();
+			break;
+		}
+	}
 
-		String qName = request.getParameter("qName").toString();
+	String qName = request.getParameter("qName").toString();
 
-		Util newUtil = new Util();
+	Util newUtil = new Util();
 		
-		PCFCommons test = new PCFCommons();
-		List<Map> queueDtl = test.queueDetails(qHost, Integer.parseInt(qPort),qName, qChannel);
-		List<Map> queueStatus = test.queueStatus(qHost, Integer.parseInt(qPort),qName, qChannel);
+	PCFCommons test = new PCFCommons();
+	List<Map> queueDtl = test.queueDetails(qHost, Integer.parseInt(qPort),qName, qChannel);
+	List<Map> queueStatus = test.queueStatus(qHost, Integer.parseInt(qPort),qName, qChannel);
 		
-		%>
+%>
 		<center><b><u>Queue Details - <%=qName%></u></b></center><br>
 	 	<center>
 	 	<a
@@ -84,12 +76,10 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				<th><b>Property</b></th>
 	    		<th><b>Property Value</b></th>
 			</tr>        
-
 			<tr>
 				<td>Queue Name</td>
 				<td><%=queueDtl.get(0).get("MQCA_Q_NAME")%></td>
 			</tr>        
-
 			<tr>
 				<td>Last Get Date</td>
 				<td><%=queueStatus.get(0).get("MQCACF_LAST_GET_DATE")%></td>
@@ -196,22 +186,13 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			</tr>        
 			<tr>
 		</table>
-
 	<center><FORM><INPUT Type="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM></center>
-	<% 
-	System.out.println(qName);
-	System.out.println(qMgr);
-	%>
-	
 	<center><FORM action="QueueDtl.jsp" >
 		<Input type=hidden name=qName value=<%=qName%> >
 		<Input type=hidden name=qMgr value=<%=qMgr%>>
 		<INPUT Type="submit" VALUE="Refresh" ></FORM></center>
-	 
-
-<%
+	<%
 		}
-//System.gc();
 	 %>
 </body>
 </html>

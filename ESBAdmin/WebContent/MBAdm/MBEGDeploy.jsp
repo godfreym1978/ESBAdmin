@@ -43,57 +43,54 @@ if(session.getAttribute("UserID")==null){
 		Please login with a valid user id <a href='../Index.html'><b>Here</b> </a>
 		</center>
 <%}else{
-	
 
-				// Create a new file upload handler 
-				DiskFileUpload upload = new DiskFileUpload();
+	String UserID = session.getAttribute("UserID").toString();
+	// Create a new file upload handler 
+	DiskFileUpload upload = new DiskFileUpload();
 
-				// parse request
-				List items = upload.parseRequest(request);
+	// parse request
+	List items = upload.parseRequest(request);
 
-				Util newUtil = new Util();
-				MBCommons newMBCmn = new MBCommons();
-
-				File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnv.txt");
-				String hostName = new String();
-				String egName = request.getParameter("egName").toString();
-				String brokerName = request.getParameter("brokerName").toString();
-				int portNum=0;
-				BrokerProxy brkProxy  = null;
+	Util newUtil = new Util();
+	MBCommons newMBCmn = new MBCommons();
+	List<Map> MBList = newMBCmn.getMBEnv(UserID);
 				
-				for (String line : FileUtils.readLines(userFile)) {
-					
-					//if(line.substring(0,line.indexOf("|")).equals(brokerName)){
-					if(line.substring(line.indexOf(";")+1,line.indexOf("|")).equals(brokerName)){	
-					hostName = line.substring(line.indexOf("|")+1, line.indexOf(":"));
-					portNum = Integer.parseInt(line.substring(line.indexOf(":")+1,line.length()));
-					brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
-					System.out.println(brkProxy);
-					}
-				}
-				//get uploaded file 
-				FileItem file = (FileItem) items.get(0);
-				String source = file.getName();
+	String hostName = new String();
+	String env = null;
+	String egName = request.getParameter("egName");
+	String brokerName = request.getParameter("brokerName");
+	int portNum=0;
+	BrokerProxy brkProxy  = null;
+				
+	for (int i=0; i<MBList.size(); i++) {
+		if(MBList.get(i).get("MBName").toString().equals(brokerName)){
+			hostName = MBList.get(i).get("MBHost").toString();
+			portNum = Integer.parseInt(MBList.get(i).get("MBPort").toString());
+			brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
+			break;
+		}
+	}
 
-				File outfile = new File(System.getProperty("catalina.base")+"\\"+source);
-				file.write(outfile);
+	//get uploaded file 
+	FileItem file = (FileItem) items.get(0);
+	String source = file.getName();
 
-				System.out.println(brkProxy);
+	File outfile = new File(System.getProperty("catalina.base")+"\\"+source);
+	file.write(outfile);
 
-				String returnMsg = 
+	String returnMsg = 
 						newMBCmn.deployBARFileToEG(brkProxy, egName, outfile.getAbsolutePath());
-				if(returnMsg.equals("success")){
-					%>
-					<Center>The BAR file <b><%=source%></b> has been successfully deplolyed to Execution Group <b><%=egName%></b> on Broker <b><%=brokerName%>.</b></Center>					
-					<%	
-				}else{
-					%>
+	if(returnMsg.equals("success")){
+		%>
+		<Center>The BAR file <b><%=source%></b> has been successfully deplolyed to Execution Group <b><%=egName%></b> on Broker <b><%=brokerName%>.</b></Center>					
+		<%	
+	}else{
+		%>
 					
-					<%	
-					
-				}
-				System.gc();
-				brkProxy.disconnect();
+		<%	
+	}
+	System.gc();
+	brkProxy.disconnect();
 }
 			%>
 </body>

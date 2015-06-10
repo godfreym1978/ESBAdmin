@@ -27,53 +27,41 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <style type="text/css">
 <%@ include file="../Style.css" %>
 </style>
-<title>Get Topic List</title>
+<title>Topic List</title>
 </head>
 <body>
-<%if(session.getAttribute("UserID")==null){
-%>
-
-		<center>
-		Looks like you are not logged in.<br>
-		
-		Please login with a valid user id <a href='../Index.html'><b>Here</b> </a>
-		</center>
-
-<%	
+<%
+String UserID = session.getAttribute("UserID").toString();
+if(UserID==null){%>	<center>
+		Looks like you are not logged in.<br> Please login with a valid
+		user id <a href='../Index.html'><b>Here</b> </a>
+	</center>
+	<%	
 }else{
-
-try{ 
-			String UserID = session.getAttribute("UserID").toString();
-			File userQMFile = new File(
-							System.getProperty("catalina.base")
-									+ File.separator+"ESBAdmin"+File.separator+UserID+File.separator+"QMEnv.txt");
-			String qMgr = request.getParameter("qMgr");
-			String qPort = null;
-			String qHost = null;
-			String qChannel = null;
-
-			for (String line : FileUtils.readLines(userQMFile)) {
-				if (line.indexOf(qMgr)>0){
-					CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-					
-					for (CSVRecord csvRecord : parser) {
-						qHost = csvRecord.get(0);
-						qPort = csvRecord.get(2);
-						qChannel = csvRecord.get(3);
-						}							
-				}
+	try{ 
+		String qMgr = request.getParameter("qMgr");
+		String qPort = null;
+		String qHost = null;
+		String qChannel = null;
+	
+		MQAdminUtil newMQAdUtil = new MQAdminUtil();
+		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+	
+		for (int i=0; i<MQList.size(); i++) {
+			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+				qHost = MQList.get(i).get("QMHost").toString();
+				qPort = MQList.get(i).get("QMPort").toString();
+				qChannel = MQList.get(i).get("QMChannel").toString();
+				break;
 			}
+		}
+		Util newUtil = new Util();
 					
-					Util newUtil = new Util();
-					
-					File userFile = new File(System.getProperty("catalina.base")
-							+File.separator+ "ESBAdmin" + File.separator+qMgr + "." + UserID);
-					
-					PCFCommons test = new PCFCommons();
-					List<Map> topicDtls = test.ListTopicNames(qHost, Integer.parseInt(qPort), qChannel);
-					int listCtr =0;
-					int listCount =topicDtls.size();
-					%>
+		PCFCommons test = new PCFCommons();
+		List<Map> topicDtls = test.ListTopicNames(qHost, Integer.parseInt(qPort), qChannel);
+		int listCtr =0;
+		int listCount =topicDtls.size();
+		%>
 
 		<center><b><u>List of Topics in Queue Manager - <%=qMgr %></u></b></center><br>
 		<table border=1 align=center class="gridtable">

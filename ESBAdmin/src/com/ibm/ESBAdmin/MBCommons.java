@@ -14,9 +14,19 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 package com.ibm.ESBAdmin;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -166,21 +176,20 @@ public class MBCommons {
 		return dr.toString();
 	}
 
-	public String getBrkParameters(String brkName, String userID)
+	public List<Map> getBrkParameters(String brkName, String userID)
 			throws ConfigManagerProxyLoggedException, NumberFormatException,
-			IOException {
+			IOException, XMLStreamException {
+
+		List<Map> MBList = getMBEnv(userID);
+		List<Map> MBListDtl = new ArrayList();
 		
-		File brkFile = new File(System.getProperty("catalina.base")
-				+ File.separator + "ESBAdmin" + File.separator + userID + File.separator +   
-				"MBEnv.txt");
-		String brkParameters = null;
-		for (String line : FileUtils.readLines(brkFile)) {
-			if (line.indexOf(brkName)>0){
-				brkParameters = line;
+		for (int i=0; i<MBList.size();i++) {
+			if (MBList.get(i).get("MBName").equals(brkName)){
+				MBListDtl.add(MBList.get(i));
 				break;
 			}
 		}
-		return brkParameters;
+		return MBListDtl;
 	}
 
 	/**
@@ -195,16 +204,19 @@ public class MBCommons {
 	public String StartEG(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			String brkParameters = getBrkParameters(brkName, userID);
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
+			/*
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
-			int portNum =0;
 			
 			for (CSVRecord csvRecord : parser) {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
-
+			*/
+			
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
 
@@ -232,6 +244,7 @@ public class MBCommons {
 		
 		BrokerProxy brkProxy = null;
 		try {
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -241,6 +254,10 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -262,6 +279,7 @@ public class MBCommons {
 	public String DeleteEG(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -271,6 +289,11 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
+							
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -296,6 +319,7 @@ public class MBCommons {
 			String applName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -305,6 +329,10 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -332,6 +360,7 @@ public class MBCommons {
 	public String StopApplication(String brkName, String egName, String applName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -341,6 +370,10 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -371,6 +404,7 @@ public class MBCommons {
 	public String StartMsgFlow(String brkName, String egName, String mfName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -380,6 +414,10 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -408,6 +446,7 @@ public class MBCommons {
 	public String StopMsgFlow(String brkName, String egName, String mfName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -417,6 +456,10 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -439,6 +482,7 @@ public class MBCommons {
 
 		try {
 
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -448,6 +492,10 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -478,6 +526,7 @@ public class MBCommons {
 	public String StartEGAll(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -487,6 +536,10 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -516,6 +569,7 @@ public class MBCommons {
 	public String StopEGAll(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
+			/*
 			String brkParameters = getBrkParameters(brkName, userID);
 			CSVParser parser = CSVParser.parse(brkParameters, CSVFormat.RFC4180);
 			String hostName = new String();
@@ -525,6 +579,10 @@ public class MBCommons {
 				hostName = csvRecord.get(2);
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
+			*/
+			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
+			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
 			BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
 					hostName, portNum, "");
@@ -543,4 +601,57 @@ public class MBCommons {
 
 	}
 
+	public List<Map> getMBEnv(String userID) throws XMLStreamException, IOException {
+		List<Map> MBListDtl = new ArrayList<Map>();
+		Map iMap = new HashMap();
+		String tagContent = null;
+		//File xmlFile = new File("c:\\MBEnv.xml");
+		
+		File xmlFile = new File(System.getProperty("catalina.base")
+				+ File.separator + "ESBAdmin" + File.separator + userID + File.separator +   
+				"MBEnvironment.xml");
+
+		InputStream in = new FileInputStream(xmlFile);
+		XMLInputFactory factory = XMLInputFactory.newInstance();
+		XMLStreamReader reader = factory.createXMLStreamReader(in);
+		
+		while (reader.hasNext()) {
+			int event = reader.next();
+			switch (event) {
+			case XMLStreamConstants.START_ELEMENT:
+				if ("Broker".equals(reader.getLocalName())) {
+					iMap = new HashMap();
+				}
+				break;
+			case XMLStreamConstants.CHARACTERS:
+				tagContent = reader.getText().trim();
+				break;
+			case XMLStreamConstants.END_ELEMENT:
+				switch (reader.getLocalName()) {
+				case "Broker":
+					MBListDtl.add(iMap);
+					break;
+				case "MBEnv":
+					iMap.put("MBEnv",tagContent);
+					break;
+				case "MBName":
+					iMap.put("MBName",tagContent);
+					break;
+				case "MBHost":
+					iMap.put("MBHost",tagContent);
+					break;
+				case "MBPort":
+					iMap.put("MBPort",tagContent);
+					break;
+				}
+				break;
+			case XMLStreamConstants.START_DOCUMENT:
+				MBListDtl = new ArrayList<Map>();
+				break;
+			}
+		}
+		in.close();
+
+		return MBListDtl;
+	}
 }

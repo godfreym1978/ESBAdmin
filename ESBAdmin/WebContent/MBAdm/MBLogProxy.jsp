@@ -48,22 +48,21 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%
 	Util newUtil = new Util();
 	MBCommons newMBCmn = new MBCommons();
+	String UserID = session.getAttribute("UserID").toString();
+	List<Map> MBList = newMBCmn.getMBEnv(UserID);
 
-	File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnv.txt");
 	String hostName = new String();
 	int portNum=0;
 	String brokerName = request.getParameter("brokerName").toString();
 
 	BrokerProxy brkProxy  = null;
-	
-	for (String line : FileUtils.readLines(userFile)) {
-		CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-		for (CSVRecord csvRecord : parser) {
-			if(csvRecord.get(1).equals(brokerName)){
-				hostName = csvRecord.get(2);
-				portNum = Integer.parseInt(csvRecord.get(3));
-				brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
-				}
+
+	for (int i=0; i<MBList.size(); i++) {
+		if(MBList.get(i).get("MBName").toString().equals(brokerName)){
+			hostName = MBList.get(i).get("MBHost").toString();
+			portNum = Integer.parseInt(MBList.get(i).get("MBPort").toString());
+			brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
+			break;
 		}
 	}
 

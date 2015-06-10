@@ -38,47 +38,38 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <title>Get Topic List</title>
 </head>
 <body>
-<title>Browse Messages</title>
+<title>Create MQ Objects</title>
 
 </head>
 <body>	 
-<%if(session.getAttribute("UserID")==null){
-%>
-
-		<center>
-		Looks like you are not logged in.<br>
-		
-		Please login with a valid user id <a href='../Index.html'><b>Here</b> </a>
-		</center>
-
-<%	
+<%
+String UserID = session.getAttribute("UserID").toString();
+if(UserID==null){%>
+	<center>
+		Looks like you are not logged in.<br> Please login with a valid
+		user id <a href='../Index.html'><b>Here</b> </a>
+	</center>
+	<%	
 }else{
-	
-	if(session.getAttribute("UserID").equals("admin")){
-
+	if(UserID.equals("admin")){
 		try{ 
-		
-			String UserID = session.getAttribute("UserID").toString();
-			File userQMFile = new File(
-							System.getProperty("catalina.base")
-									+ File.separator+"ESBAdmin"+File.separator+UserID+File.separator+"QMEnv.txt");
 			String qMgr = request.getParameter("qMgr");
 			String qPort = null;
 			String qHost = null;
 			String qChannel = null;
 
-			for (String line : FileUtils.readLines(userQMFile)) {
-				if (line.indexOf(qMgr)>0){
-					CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-					
-					for (CSVRecord csvRecord : parser) {
-						qHost = csvRecord.get(0);
-						qPort = csvRecord.get(2);
-						qChannel = csvRecord.get(3);
-						}							
+			MQAdminUtil newMQAdUtil = new MQAdminUtil();
+			List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+
+			for (int i=0; i<MQList.size(); i++) {
+				if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+					qHost = MQList.get(i).get("QMHost").toString();
+					qPort = MQList.get(i).get("QMPort").toString();
+					qChannel = MQList.get(i).get("QMChannel").toString();
+					break;
 				}
 			}
-		
+			
 			Util newUtil = new Util();
 		
 			PCFCommons newPFCCM = new PCFCommons();
@@ -133,7 +124,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 							<div id="CreateChannel" class="hidden">
 								<form action='CreateObjectRep.jsp?qMgr=<%=qMgr%>' method="post">
 								
-								<table border=1 align=center >
+								<table border=1 align=center class="gridtable">
 										<tr><td>Channel Name</td><td><input type=text name=chanName></td></tr>
 										<tr><td>Channel Type</td>
 											<td>
@@ -169,7 +160,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 						<div id="col2">
 							<div id="CreateListener" class="hidden">
 								<form action='CreateObjectRep.jsp?qMgr=<%=qMgr%>' method="post">
-								<table border=1 align=center >
+								<table border=1 align=center class="gridtable">
 										<tr><td>Listener Name</td><td><input type=text name=listName></td></tr>
 										<tr><td>Listener Type</td>
 											<td>
@@ -200,7 +191,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 						<div id="col2">
 							<div id="CreateTopic" class="hidden">
 								<form action='CreateObjectRep.jsp?qMgr=<%=qMgr%>' method="post">
-								<table border=1 align=center >
+								<table border=1 align=center class="gridtable">
 										<tr><td>Topic Name</td><td><input type=text name=topicName></td></tr>
 										<tr><td>Topic String</td><td><input type=text name=topicString></td></tr>
 										<tr><td>Topic Description</td><td><input type=text name=topicDesc></td></tr>
@@ -224,7 +215,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 							<div id="CreateSubscription" class="hidden">
 								<form action='CreateObjectRep.jsp?qMgr=<%=qMgr%>' method="post">
 								
-								<table border=1 align=center >
+								<table border=1 align=center class="gridtable">
 										<tr><td>Subscription Name</td><td><input type=text name=subName></td></tr>
 										<tr><td>Topic String</td><td><input type=text name=topicString></td></tr>
 										<tr><td>Topic Name</td><td><input type=text name=subTopicName></td></tr>

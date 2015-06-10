@@ -48,7 +48,9 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		Util newUtil = new Util();
 		MBCommons newMBCmn = new MBCommons();
 
-		File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnv.txt");
+		List<Map> MBList = newMBCmn.getMBEnv(UserID);
+
+		//File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnv.txt");
 		String hostName = new String();
 		String env = null;
 		String egName = request.getParameter("egName");
@@ -56,20 +58,20 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		int portNum=0;
 		BrokerProxy brkProxy  = null;
 		String qMgr = null;
-		for (String line : FileUtils.readLines(userFile)) {
-			CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-			for (CSVRecord csvRecord : parser) {
-				if(csvRecord.get(1).equals(brokerName)){
-					env = csvRecord.get(0);
-					hostName = csvRecord.get(2);
-					portNum = Integer.parseInt(csvRecord.get(3));
-				}
-				BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
-						hostName, portNum, "");
-				brkProxy = BrokerProxy.getInstance(bcp);
-				qMgr = brkProxy.getQueueManagerName(); 
-			}							
+		
+		for (int i=0; i<MBList.size(); i++) {
+			if(MBList.get(i).get("MBName").toString().equals(brokerName)){
+				hostName = MBList.get(i).get("MBHost").toString();
+				portNum = Integer.parseInt(MBList.get(i).get("MBPort").toString());
+				brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
+				break;
+			}
 		}
+		BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
+				hostName, portNum, "");
+		brkProxy = BrokerProxy.getInstance(bcp);
+		qMgr = brkProxy.getQueueManagerName(); 
+
 		ArrayList<ApplicationProxy> appProxy = newMBCmn.getExecutionGroupDetails(brkProxy, egName);
 		ArrayList<MessageFlowProxy> egMFProxy = newMBCmn.getMFDetails(brkProxy,egName);
 		ExecutionGroupProxy egProxy =
