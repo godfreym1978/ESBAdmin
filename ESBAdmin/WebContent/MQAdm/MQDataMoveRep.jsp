@@ -32,21 +32,20 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
 <body>
 	<center>
-		<%
-if(session.getAttribute("UserID")==null){
-%>
-
-	<center>
-		Looks like you are not logged in.<br> Please login with a valid
-		user id <a href='../Index.html'><b>Here</b> </a>
-	</center>
-	<%}else{
+	<%
+	if(session.getAttribute("UserID")==null){%>
+		<center>
+			Looks like you are not logged in.<br> Please login with a valid
+			user id <a href='../Index.html'><b>Here</b> </a>
+		</center>
+	<%	
+	}else{
+		String UserID = session.getAttribute("UserID").toString();
 
 		String qmDtls = session.getAttribute(request.getParameter("qMgr")).toString();				
 		String qMgr = request.getParameter("qMgr");
 		String qPort = qmDtls.substring(qmDtls.indexOf(':') + 1,qmDtls.length());
 		String qHost = qmDtls.substring(0, qmDtls.indexOf('|'));
-		String UserID = session.getAttribute("UserID").toString();
 		Util newUtil = new Util();
 		String srcQueueName = request.getParameter("srcQueueName");
 		String tarQueueName = request.getParameter("tarQueueName");
@@ -91,8 +90,6 @@ if(session.getAttribute("UserID")==null){
 		<%
 		}
 	}
-		
-		
 			 %>	
 		</table>
 		

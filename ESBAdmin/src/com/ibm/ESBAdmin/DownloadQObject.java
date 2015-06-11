@@ -22,10 +22,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.csv.*;
 import org.apache.commons.io.*;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Servlet implementation class DownloadMsg
@@ -47,85 +52,85 @@ public class DownloadQObject extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws ServletException, IOException  {
 		// TODO Auto-generated method stub
-		response.setContentType("text/plain");
-		response.setHeader("Content-Disposition", "attachment;filename="
-				+ request.getParameter("objName").toString() + ".mqsc");
-
-		OutputStream outStream = response.getOutputStream();
-		byte[] qMgrBytes;
 		HttpSession session = request.getSession(true);
 
-		String UserID = session.getAttribute("UserID").toString();
-		File userQMFile = new File(System.getProperty("catalina.base")
-				+ File.separator + "ESBAdmin" + File.separator + UserID
-				+ File.separator + "QMEnv.txt");
-		String qMgr = request.getParameter("qMgr");
-		String qPort = null;
-		String qHost = null;
-		String qChannel = null;
+		if(session.getAttribute("UserID")!=null){
+			try {
 
-		for (String line : FileUtils.readLines(userQMFile)) {
-			if (line.indexOf(qMgr) > 0) {
-				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
+				String UserID = session.getAttribute("UserID").toString();
+				response.setContentType("text/plain");
+				response.setHeader("Content-Disposition", "attachment;filename="
+						+ request.getParameter("objName").toString() + ".mqsc");
+	
+				OutputStream outStream = response.getOutputStream();
+				byte[] qMgrBytes;
+				String qMgr = request.getParameter("qMgr");
+				String qPort = null;
+				String qHost = null;
+				String qChannel = null;
+				MQAdminUtil newMQAdUtil = new MQAdminUtil();
+	
+				List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
 
-				for (CSVRecord csvRecord : parser) {
-					qHost = csvRecord.get(0);
-					qPort = csvRecord.get(2);
-					qChannel = csvRecord.get(3);
+				for (int i=0; i<MQList.size(); i++) {
+					if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+						qHost = MQList.get(i).get("QMHost").toString();
+						qPort = MQList.get(i).get("QMPort").toString();
+						qChannel = MQList.get(i).get("QMChannel").toString();
+						break;
+					}
 				}
+				String objType = request.getParameter("objType").toString();
+				String objName = request.getParameter("objName").toString();
+
+				PCFCommons pcfCM = new PCFCommons();
+
+				if (objType.equals("QUEUE")) {
+					qMgrBytes = String.valueOf(
+							pcfCM.createQScript(qHost, Integer.parseInt(qPort),
+									objName, qChannel)).getBytes();
+					outStream.write(qMgrBytes);
+				}
+
+				if (objType.equals("CHANNEL")) {
+					qMgrBytes = String.valueOf(
+							pcfCM.createChlScript(qHost, Integer.parseInt(qPort),
+									objName, qChannel)).getBytes();
+					outStream.write(qMgrBytes);
+				}
+
+				if (objType.equals("LISTENER")) {
+					qMgrBytes = String.valueOf(
+							pcfCM.createListScript(qHost, Integer.parseInt(qPort),
+									objName, qChannel)).getBytes();
+					outStream.write(qMgrBytes);
+				}
+
+				if (objType.equals("TOPIC")) {
+					qMgrBytes = String.valueOf(
+							pcfCM.createTopicScript(qHost, Integer.parseInt(qPort),
+									objName, qChannel)).getBytes();
+					outStream.write(qMgrBytes);
+				}
+
+				if (objType.equals("SUB")) {
+					qMgrBytes = String.valueOf(
+							pcfCM.createSubScript(qHost, Integer.parseInt(qPort),
+									objName, qChannel)).getBytes();
+					outStream.write(qMgrBytes);
+				}
+				
+				outStream.flush();
+				outStream.close();
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		}else{
+			System.out.println("Not logged in");
 		}
-
-		String objType = request.getParameter("objType").toString();
-		String objName = request.getParameter("objName").toString();
-
-		try {
-			PCFCommons pcfCM = new PCFCommons();
-
-			if (objType.equals("QUEUE")) {
-				qMgrBytes = String.valueOf(
-						pcfCM.createQScript(qHost, Integer.parseInt(qPort),
-								objName, qChannel)).getBytes();
-				outStream.write(qMgrBytes);
-			}
-
-			if (objType.equals("CHANNEL")) {
-				qMgrBytes = String.valueOf(
-						pcfCM.createChlScript(qHost, Integer.parseInt(qPort),
-								objName, qChannel)).getBytes();
-				outStream.write(qMgrBytes);
-			}
-
-			if (objType.equals("LISTENER")) {
-				qMgrBytes = String.valueOf(
-						pcfCM.createListScript(qHost, Integer.parseInt(qPort),
-								objName, qChannel)).getBytes();
-				outStream.write(qMgrBytes);
-			}
-
-			if (objType.equals("TOPIC")) {
-				qMgrBytes = String.valueOf(
-						pcfCM.createTopicScript(qHost, Integer.parseInt(qPort),
-								objName, qChannel)).getBytes();
-				outStream.write(qMgrBytes);
-			}
-
-			if (objType.equals("SUB")) {
-				qMgrBytes = String.valueOf(
-						pcfCM.createSubScript(qHost, Integer.parseInt(qPort),
-								objName, qChannel)).getBytes();
-				outStream.write(qMgrBytes);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		outStream.flush();
-		outStream.close();
 		System.gc();
 	}
-
 }

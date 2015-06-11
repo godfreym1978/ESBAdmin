@@ -44,14 +44,14 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 </head>
 <body>	 
 <%
-String UserID = session.getAttribute("UserID").toString();
-if(UserID==null){%>
-	<center>
-		Looks like you are not logged in.<br> Please login with a valid
-		user id <a href='../Index.html'><b>Here</b> </a>
-	</center>
-	<%	
+if(session.getAttribute("UserID")==null){%>
+<center>
+	Looks like you are not logged in.<br> Please login with a valid
+	user id <a href='../Index.html'><b>Here</b> </a>
+</center>
+<%	
 }else{
+	String UserID = session.getAttribute("UserID").toString();
 	try{
 		String qMgr = request.getParameter("qMgr");
 		String qPort = null;

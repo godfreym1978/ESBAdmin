@@ -50,21 +50,23 @@ if (session.getAttribute("UserID") != null&&session.getAttribute("UserID").toStr
 				<td>Allow Access</td>
 			</tr>
 			<%
-			for (String line : FileUtils.readLines(qmFile)) {
-				String qMgr = null;
-				String qHost = null;
-
-				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-						
-				for (CSVRecord csvRecord : parser) {
-					qHost = csvRecord.get(0);
-					qMgr = csvRecord.get(1);
-				}							
 			
+			String UserID = session.getAttribute("UserID").toString();
+			String qMgr = null;
+			String qPort = null;
+			String qHost = null;
+			String qChannel = null;
+
+			MQAdminUtil newMQAdUtil = new MQAdminUtil();
+			List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+
+			for (int i=0; i<MQList.size(); i++) {
+					qMgr = MQList.get(i).get("QMName").toString();
+					qHost = MQList.get(i).get("QMHost").toString();
 			%>
 			<tr>
 				<td>Queue Manager - <%=qMgr%> , Host - <%=qHost%></td>
-				<td><input type="checkbox" name="QueueMgr" value="<%=line%>"></td>
+				<td><input type="checkbox" name="QueueMgr" value="<%=qMgr%>"></td>
 			</tr>
 			<%
 				} 

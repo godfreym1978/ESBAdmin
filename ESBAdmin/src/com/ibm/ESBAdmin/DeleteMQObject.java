@@ -15,6 +15,9 @@ package com.ibm.ESBAdmin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.csv.*;
 import org.apache.commons.io.*;
@@ -55,23 +59,26 @@ public class DeleteMQObject extends HttpServlet {
 		HttpSession httpSession = request.getSession(true);
 		
 		String UserID = httpSession.getAttribute("UserID").toString();
-		File userQMFile = new File(
-						System.getProperty("catalina.base")
-								+ File.separator+"ESBAdmin"+File.separator+UserID+File.separator+"QMEnv.txt");
-		String qMgr = request.getParameter("qMgr").toString();
+		String qMgr = request.getParameter("qMgr");
 		String qPort = null;
 		String qHost = null;
 		String qChannel = null;
 
-		for (String line : FileUtils.readLines(userQMFile)) {
-			if (line.indexOf(qMgr)>0){
-				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-				
-				for (CSVRecord csvRecord : parser) {
-					qHost = csvRecord.get(0);
-					qPort = csvRecord.get(2);
-					qChannel = csvRecord.get(3);
-					}							
+		MQAdminUtil newMQAdUtil = new MQAdminUtil();
+		List<Map> MQList = new ArrayList();
+		try {
+			MQList = newMQAdUtil.getQMEnv(UserID);
+		} catch (XMLStreamException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		for (int i=0; i<MQList.size(); i++) {
+			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+				qHost = MQList.get(i).get("QMHost").toString();
+				qPort = MQList.get(i).get("QMPort").toString();
+				qChannel = MQList.get(i).get("QMChannel").toString();
+				break;
 			}
 		}
 

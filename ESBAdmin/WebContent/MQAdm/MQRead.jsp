@@ -24,7 +24,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <style type="text/css">
 <%@ include file="../Style.css" %>
 </style>
-<title>Insert title here</title>
+<title>Read messages from queue</title>
 </head>
 <%if(session.getAttribute("UserID")==null){
 %>
