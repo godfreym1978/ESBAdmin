@@ -47,8 +47,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	
 	String []qMgr = request.getParameterValues("QueueMgr");
 	String []broker = request.getParameterValues("Broker");
-	//List<String> setupQueue = new ArrayList<String>();
-	System.out.println(qMgr[0]);
 	
 	int lineCtr = 0;
 	boolean isUser=true;
@@ -60,8 +58,8 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	}
 	
 	File userDir = new File(System.getProperty("catalina.base")+ File.separator+"ESBAdmin"+File.separator+UsrID);
-	File userQMFile = new File(System.getProperty("catalina.base")+ File.separator+"ESBAdmin"+File.separator+UsrID+File.separator+"QMEnv.txt");
-	File userBrkFile = new File(System.getProperty("catalina.base")+ File.separator+"ESBAdmin"+File.separator+UsrID+File.separator+"MBEnv.txt");
+	File userQMFile = new File(System.getProperty("catalina.base")+ File.separator+"ESBAdmin"+File.separator+UsrID+File.separator+"MQEnvironment.xml");
+	File userBrkFile = new File(System.getProperty("catalina.base")+ File.separator+"ESBAdmin"+File.separator+UsrID+File.separator+"MBEnvironment.xml");
 	for (String line : FileUtils.readLines(userFile)) {
 		if(line.toString().equals(UsrID)){
 			isUser=false;	
@@ -87,37 +85,62 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		String qHost = new String();
 		String qMgrName = new String();
 
+		MQAdminUtil newMQAdUtil = new MQAdminUtil();
+		MBCommons newMBCmn = new MBCommons();
+		String UserID = session.getAttribute("UserID").toString();
+		List<Map> MBList = newMBCmn.getMBEnv(UserID);
+		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+		
+		Map<String,String> qmMap = new HashMap<String, String>();
+		List<Map> mqList = new ArrayList();
+		
 		for (newQMCtr=0;newQMCtr<qMgr.length;newQMCtr++){
-			FileUtils.writeStringToFile(userQMFile, qMgr[newQMCtr].toString().trim()+"\n", true);
-			CSVParser parser = CSVParser.parse(qMgr[newQMCtr].toString().trim(), CSVFormat.RFC4180);
-					
-			for (CSVRecord csvRecord : parser) {
-				qHost = csvRecord.get(0);
-				qMgrName = csvRecord.get(1);
-			}							
+			
+			for(int i=0;i<MQList.size();i++){
+				if(qMgr[newQMCtr].equals(MQList.get(i).get("QMTimeID"))){
+					qmMap = new HashMap<String, String>();
+					qmMap.put("QMTimeID", MQList.get(i).get("QMTimeID").toString());
+					qmMap.put("QMName", MQList.get(i).get("QMName").toString());
+					qmMap.put("QMHost", MQList.get(i).get("QMHost").toString());
+					qmMap.put("QMPort", MQList.get(i).get("QMPort").toString());
+					qmMap.put("QMChannel", MQList.get(i).get("QMChannel").toString());
+					mqList.add(qmMap);
+				}
+			}
 				%>
 				<center>Queue Manager - <b><%=qMgrName%></b> on Host - <b><%=qHost%></b> - is setup for administration for user <%=UsrID%><br></center>
 				<%
 		}
-	
+		newUtil.writeXML(userQMFile.getAbsolutePath(), "MQEnvironment", mqList); 	
+
 		int newMBCtr;
 		String mbHost = new String();
 		String mbQMgrPort = new String();
-	
+
+		Map<String,String> mbMap = new HashMap<String, String>();
+		List<Map> mbList = new ArrayList();
+
 		for (newMBCtr=0;newMBCtr<broker.length;newMBCtr++){
-			FileUtils.writeStringToFile(userBrkFile, broker[newMBCtr].toString().trim()+"\n", true);
+			//FileUtils.writeStringToFile(userBrkFile, broker[newMBCtr].toString().trim()+"\n", true);
 			
-			CSVParser parser = CSVParser.parse(broker[newMBCtr].toString().trim(), CSVFormat.RFC4180);
-			
-			for (CSVRecord csvRecord : parser) {
-				mbHost = csvRecord.get(1);
-				mbQMgrPort = csvRecord.get(3);
-			}							
+			for(int i=0;i<MBList.size();i++){
+				if(broker[newMBCtr].equals(MBList.get(i).get("MBTimeID"))){
+					mbMap = new HashMap<String, String>();
+					mbMap.put("MBTimeID", MBList.get(i).get("MBTimeID").toString());
+					mbMap.put("MBHost", MBList.get(i).get("MBHost").toString());
+					mbMap.put("MBEnv", MBList.get(i).get("MBEnv").toString());
+					mbMap.put("MBPort", MBList.get(i).get("MBPort").toString());
+					mbMap.put("MBName", MBList.get(i).get("MBName").toString());
+					mbList.add(mbMap);
+				}
+			}
 				%>
 				<center>Broker Host - <b><%=mbHost%></b>  with Queue Manager port <%=mbQMgrPort%>- is setup for administration for user <%=UsrID%><br></center>
 				<%
 			}
+		newUtil.writeXML(userBrkFile.getAbsolutePath(), "MBEnvironment", mbList);
 		}
+		
 }
 %>
 

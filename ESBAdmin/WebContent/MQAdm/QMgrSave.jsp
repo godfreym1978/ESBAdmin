@@ -21,6 +21,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="java.util.*"%>
 <%@ page import="com.ibm.mq.MQEnvironment"%>
 <%@ page import="com.ibm.mq.MQQueueManager"%>
+<%@ page import="java.sql.Timestamp"%>
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
 
@@ -47,7 +48,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	%>
 			<center><h3> Queue Manager Environment</h3></center>
 			
-
 			<Table border=1 align=center class="gridtable">
 				<tr>
 					<th><b>Queue Manager HostName</b></th>
@@ -62,16 +62,12 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					<td><%=request.getParameter("qmgrChl")%></td>
 				</tr>
 			</table>
-
 	<%	
-				
 		String UserID = session.getAttribute("UserID").toString();
 		Util newUtil = new Util();
 		
-		//MBCommons newMBCmn = new MBCommons();
 		File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+
 									File.separator+session.getAttribute("UserID").toString()+File.separator+"MQEnvironment.xml");
-		
 		
 		MQAdminUtil newMQAdUtil = new MQAdminUtil();
 		PCFCommons newPCFCom = new PCFCommons();
@@ -87,12 +83,12 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
 				userFile.createNewFile();
 				
-				//List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
-				
-				//Map<String, String> qmMap = new Map();
-				
+				java.util.Date date= new java.util.Date();
+				Timestamp newTimeStmp = new Timestamp(date.getTime());
+				String newTimeID = newTimeStmp.toString().replaceAll("-", "").replaceAll(":", "").replaceAll(" ", "");
+
 				Map<String,String> qmMap = new HashMap<String, String>();
-				
+				qmMap.put("QMTimeID", newTimeID);
 				qmMap.put("QMName", request.getParameter("qmgrName"));
 				qmMap.put("QMHost", request.getParameter("qmgrHost"));
 				qmMap.put("QMPort", request.getParameter("qmgrPort"));
@@ -102,17 +98,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				newList.add(qmMap);
 				newUtil.writeXML(userFile.getAbsolutePath(), "MQEnvironment", newList); 	
 				
-				/*
-				for (int i=0; i<MQList.size(); i++) {
-					if(MQList.get(i).get("QMName").toString().equals(qMgr)){
-						qHost = MQList.get(i).get("QMHost").toString();
-						qPort = MQList.get(i).get("QMPort").toString();
-						qChannel = MQList.get(i).get("QMChannel").toString();
-						break;
-					}
-				}
-				*/
-			
 				%>
 					<center>
     				The Queue Manager with above details has been successfully registered.<br>
@@ -133,14 +118,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			
 			List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
 			
-			//Map<String, String> qmMap = new Map();
-			
-			/*
-			String newQMgrEntry = new String(request.getParameter("qmgrHost")+","+
-							request.getParameter("qmgrName")+","+
-							request.getParameter("qmgrPort")+","+
-							request.getParameter("qmgrChl"));
-			*/
 			boolean isSetupFlag = false;
 			
 			for(int i=0;i<MQList.size();i++){
@@ -167,8 +144,13 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					MQQueueManager qmgr = new MQQueueManager(request.getParameter("qmgrName"));
 					qmgr.disconnect();
 
-					Map<String,String> qmMap = new HashMap<String, String>();
 					
+					java.util.Date date= new java.util.Date();
+					Timestamp newTimeStmp = new Timestamp(date.getTime());
+					String newTimeID = newTimeStmp.toString().replaceAll("-", "").replaceAll(":", "").replaceAll(" ", "");
+
+					Map<String,String> qmMap = new HashMap<String, String>();
+					qmMap.put("QMTimeID", newTimeID);
 					qmMap.put("QMName", request.getParameter("qmgrName"));
 					qmMap.put("QMHost", request.getParameter("qmgrHost"));
 					qmMap.put("QMPort", request.getParameter("qmgrPort"));
@@ -176,12 +158,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					
 					MQList.add(qmMap);
 					newUtil.writeXML(userFile.getAbsolutePath(), "MQEnvironment", MQList); 	
-
-					/*
-					BufferedWriter output = new BufferedWriter(new FileWriter(userFile,true));
-					output.write("\n"+newQMgrEntry);
-					output.close();
-					*/
 					%>
 						<center>
 	    				The Queue Manager with above details has been successfully registered.<br>

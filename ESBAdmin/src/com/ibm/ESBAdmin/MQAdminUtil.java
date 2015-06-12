@@ -584,6 +584,9 @@ public class MQAdminUtil {
 					case "QMPort":
 						iMap.put("QMPort",tagContent);
 						break;
+					case "QMTimeID":
+						iMap.put("QMTimeID",tagContent);
+						break;
 					}
 					break;
 				case XMLStreamConstants.START_DOCUMENT:

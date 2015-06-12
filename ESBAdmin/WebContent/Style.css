@@ -5,7 +5,7 @@
  padding: 0px;
  border: 0px;
  color: #000;
- background: #AFAFFF;
+ background: #B0B0B0 ;
  }
  html, body, p, th, td, li, dd, dt {
  font: 0.90em Arial, 'Helvetica Neue', Helvetica, sans-serif;
@@ -14,15 +14,15 @@
  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
  }
 table.gridtable {
-	font-family: Arial;
+	font-family: monospace;
 	font-size:13px;
 	color:#000000;
-	border-width: 1px;
+	border-width: 2px;
 	border-color: #666666;
 	border-collapse: collapse;
 }
 table.gridtable th {
-	border-width: 1px;
+	border-width: 2px;
 	padding: 8px;
 	border-style: solid;
 	border-color: #666666;

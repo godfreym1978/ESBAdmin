@@ -21,6 +21,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="java.util.*"%>
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
+<%@ page import="java.sql.Timestamp"%>
 
 <html>
 <head>
@@ -39,7 +40,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		
 		Please login with a valid user id <a href='../Index.html'><b>Here</b> </a>
 		</center>
-	
 	<%	
 	}else{
 	%>
@@ -60,9 +60,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					<td><%=request.getParameter("brkPort")%></td>
 				</tr>
 			</table>
-
 	<%	
-		
 		String UserID = session.getAttribute("UserID").toString();
 		Util newUtil = new Util();
 		
@@ -78,12 +76,12 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				brkProxy.disconnect();
 				userFile.createNewFile();
 				
-				//List<Map> MQList = newMQAdUtil.getMBEnv(UserID);
-				
-				//Map<String, String> qmMap = new Map();
-				
+				java.util.Date date= new java.util.Date();
+				Timestamp newTimeStmp = new Timestamp(date.getTime());
+				String newTimeID = newTimeStmp.toString().replaceAll("-", "").replaceAll(":", "").replaceAll(" ", "");
+
 				Map<String,String> mbMap = new HashMap<String, String>();
-				
+				mbMap.put("MBTimeID", newTimeID);
 				mbMap.put("MBName", request.getParameter("brkName"));
 				mbMap.put("MBHost", request.getParameter("brkHost"));
 				mbMap.put("MBPort", request.getParameter("brkPort"));
@@ -92,22 +90,12 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				List<Map> newList = new ArrayList();
 				newList.add(mbMap);
 				newUtil.writeXML(userFile.getAbsolutePath(), "MBEnvironment", newList); 	
-
-				/*
-				BufferedWriter output = new BufferedWriter(new FileWriter(userFile));
-				output.write(request.getParameter("brkEnv")+";"+ 
-				request.getParameter("brkName")+"|"+
-				request.getParameter("brkHost")+":"+
-				request.getParameter("brkPort"));
-				output.close();
-				*/
 				%>
 					<center>
     				The broker runtime with above details has been successfully registered.<br>
     				</center>
 					<hr>
     			<%	
-				
 				}catch(Exception e){
 				%>
 					<center>
@@ -121,13 +109,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			
 			List<Map> MBList = newMBCmn.getMBEnv(UserID);
 			
-			/*
-			String newBrkEntry = new String(request.getParameter("brkEnv")+";"+ 
-				request.getParameter("brkName")+"|"+
-				request.getParameter("brkHost")+":"+
-				request.getParameter("brkPort"));
-			*/
-			
 			boolean isSetupFlag = false;
 			
 			for(int i=0;i<MBList.size();i++){
@@ -138,7 +119,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					isSetupFlag = true;
 				}
 			}
-
 			if(isSetupFlag){
 			%>
 					<center>
@@ -152,14 +132,13 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 								request.getParameter("brkHost"), Integer.parseInt(request.getParameter("brkPort")), "");
 					BrokerProxy brkProxy = BrokerProxy.getInstance(bcp);
 					brkProxy.disconnect();
-					/*
-					FileWriter fw = new FileWriter(userFile,true);
-					fw.write("\n"+newBrkEntry);
-					fw.close();
-					*/
 					
+					java.util.Date date= new java.util.Date();
+					Timestamp newTimeStmp = new Timestamp(date.getTime());
+					String newTimeID = newTimeStmp.toString().replaceAll("-", "").replaceAll(":", "").replaceAll(" ", "");
+
 					Map<String,String> mbMap = new HashMap<String, String>();
-					
+					mbMap.put("MBTimeID", newTimeID);
 					mbMap.put("MBEnv", request.getParameter("brkEnv"));
 					mbMap.put("MBHost", request.getParameter("brkHost"));
 					mbMap.put("MBPort", request.getParameter("brkPort"));
@@ -167,14 +146,12 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					
 					MBList.add(mbMap);
 					newUtil.writeXML(userFile.getAbsolutePath(), "MBEnvironment", MBList); 	
-
 					%>
 					<center>
     				The broker runtime with above details has been successfully registered.<br>
     				</center>
 					<hr>
 	    			<%	
-				
 				}catch(Exception e){
 				%>
 					<center>
@@ -184,154 +161,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					<hr>
     			<%	
 				}
-			
 			}
-			
-			
-
-		}
-		
-		if (userFile.exists()){
-			
-			String env = null;		
-			String hostName = null;
-			int portNum ;
-			BrokerProxy brkProxy  = null;
-			ArrayList<ExecutionGroupProxy> egProxy = null;
-			int egCtr;
-			int egCount;
-			boolean chkFlag = false;
-			String notRunning = new String("");
-			%>
-			<br>
-			<center><h3> Message Broker Environment</h3></center>
-			
-			<Table border=1 align=center class="gridtable">
-				<tr>
-					<th><b>Broker Details</b></th>
-					<th><b>Broker EGs</b></th>
-					<th><b>Broker EGs Action</b></th>
-					<th><b>Broker Logs</b></th>
-				</tr>
-			
-			<%
-			
-			List<Map> MBList = newMBCmn.getMBEnv(UserID);
-			for(int i=0; i<MBList.size();i++){
-
-				env = MBList.get(i).get("MBEnv").toString();
-				hostName = MBList.get(i).get("MBHost").toString();
-				portNum = Integer.parseInt(MBList.get(i).get("MBPort").toString());
-				
-				try{
-					//brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
-					BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(
-							hostName, portNum, "");
-					brkProxy = BrokerProxy.getInstance(bcp);
-			%>
-			<tr>
-				<td><%=brkProxy.getName()%>
-					<br>
-					<a href='MBLogProxy.jsp?brokerName=<%=brkProxy.getName()%>'>	<%=brkProxy.getName()%> Log </a>
-					<br><font color=blue>Broker QM</font> - <%=brkProxy.getQueueManagerName()%> 
-					<br><font color=blue>Broker OS</font> - <%=brkProxy.getBrokerOSName()%> 
-					<br><font color=blue>Broker OS Version</font> - <%=brkProxy.getBrokerOSVersion()%> 
-					<br><font color=blue>Broker Version</font> - <%=brkProxy.getBrokerVersion()%> 
-				</td>
-				<td>
-				<%
-					egProxy = Collections.list(brkProxy.getExecutionGroups(null));
-					egCount = egProxy.size();
-					for (egCtr=0;egCount>egCtr;egCtr++){
-						%><a href='MBGetEG.jsp?brokerName=<%=brkProxy.getName()%>&egName=<%=egProxy.get(egCtr).getName()%>'>
-						<%=egProxy.get(egCtr).getName()%></a> - <%
-						if(egProxy.get(egCtr).isRunning()){
-							%>
-							<font color=green>Running</font><br>
-							<%						
-						}else{
-							 %>
-							<font color=red>Stopped</font><br>
-							<%
-						}
-					}
-				%>
-				</td>
-				<td>
-				<%if(UserID.equals("admin")){
-					egCount = egProxy.size();
-					for (egCtr = 0; egCount > egCtr; egCtr++) {
-						%>	<%=egProxy.get(egCtr).getName()%> -> 
-						<a
-						href='../MBAdmin?action=EGstart&egName=<%=egProxy.get(egCtr).getName()%>&brkName=<%=brkProxy.getName()%>' >
-							START </a> 
-							| 
-						<a
-						href='../MBAdmin?action=EGstop&egName=<%=egProxy.get(egCtr).getName()%>&brkName=<%=brkProxy.getName()%>' >
-							STOP </a>
-							| 	 
-						<a
-						href='../MBAdmin?action=EGdelete&egName=<%=egProxy.get(egCtr).getName()%>&brkName=<%=brkProxy.getName()%>' >
-							DELETE </a><br> 
-
-					<%}
-				}else if((env.equals("DEV")||env.equals("QA"))&&UserID.indexOf("dev-")>-1){
-					egCount = egProxy.size();
-					 
-					for (egCtr = 0; egCount > egCtr; egCtr++) {
-									
-					%>	<%=egProxy.get(egCtr).getName()%> -> 
-						<a
-						href='../MBAdmin?action=EGstart&egName=<%=egProxy.get(egCtr).getName()%>&brkName=<%=brkProxy.getName()%>' >
-							START </a> 
-							| 
-						<a
-						href='../MBAdmin?action=EGstop&egName=<%=egProxy.get(egCtr).getName()%>&brkName=<%=brkProxy.getName()%>' >
-							STOP </a>
-							| 	 
-						<a
-						href='../MBAdmin?action=EGdelete&egName=<%=egProxy.get(egCtr).getName()%>&brkName=<%=brkProxy.getName()%>' >
-							DELETE </a><br> 
-					<%}
-					
-				}
-				%>
-				</td>
-
-				<td>					
-
-					<%
-					egProxy = Collections.list(brkProxy.getExecutionGroups(null));
-					egCount = egProxy.size();
-					for (egCtr=0;egCount>egCtr;egCtr++){
-						%>
-						<a href='MBActLogProxy.jsp?brokerName=<%=brkProxy.getName()%>&egName=<%=egProxy.get(egCtr).getName()%>'>
-						<%=egProxy.get(egCtr).getName()%> Activity Log </a>
-						<br> <%
-					}
-					%>
-
-				</td>
-				
-			</tr>
-					<%
-					brkProxy.disconnect();
-					
-					}catch(ConfigManagerProxyLoggedMQException e){
-						e.printStackTrace();
-						chkFlag = true;
-						notRunning = notRunning+" "+hostName;
-						}
-					}
-					%>
-		</Table>
-		<%
-		egProxy.clear();
-		
-		System.gc();
-			
-		}else{
-		
 		}
 	}
 %>

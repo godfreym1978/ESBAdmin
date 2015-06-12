@@ -66,7 +66,7 @@ if (session.getAttribute("UserID") != null&&session.getAttribute("UserID").toStr
 			%>
 			<tr>
 				<td>Queue Manager - <%=qMgr%> , Host - <%=qHost%></td>
-				<td><input type="checkbox" name="QueueMgr" value="<%=qMgr%>"></td>
+				<td><input type="checkbox" name="QueueMgr" value="<%=MQList.get(i).get("QMTimeID").toString()%>"></td>
 			</tr>
 			<%
 				} 
@@ -76,22 +76,22 @@ if (session.getAttribute("UserID") != null&&session.getAttribute("UserID").toStr
 				<td>Allow Access</td>
 			</tr>
 			<%
+			String env = null;
+			String hostName = null;
+			int portNum;
+			MBCommons newMBCmn = new MBCommons();
+			List<Map> MBList = newMBCmn.getMBEnv(UserID);
+			for(int i=0; i<MBList.size();i++){
 
-			for (String line : FileUtils.readLines(mbFile)) {
-				String env = null;
-				String mbHost = null;
-				String mbMgr = null;
+				env = MBList.get(i).get("MBEnv").toString();
+				hostName = MBList.get(i).get("MBHost").toString();
+				portNum = Integer.parseInt(MBList.get(i).get("MBPort").toString());
 				
-				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
-				for (CSVRecord csvRecord : parser) {
-					env = csvRecord.get(0);
-					mbHost = csvRecord.get(2);
-					mbMgr = csvRecord.get(3);
-					}							
+
 			%>
 			<tr>
-				<td>Environment - <%=env%> , Host - <%=mbHost%> , QM Port <%=mbMgr%></td>
-				<td><input type="checkbox" name="Broker" value="<%=line%>"></td>
+				<td>Environment - <%=env%> , Host - <%=hostName%> , QM Port <%=portNum%></td>
+				<td><input type="checkbox" name="Broker" value="<%=MBList.get(i).get("MBTimeID").toString()%>"></td>
 			</tr>
 			<%
 				} 

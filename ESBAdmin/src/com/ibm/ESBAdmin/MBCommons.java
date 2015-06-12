@@ -643,6 +643,10 @@ public class MBCommons {
 				case "MBPort":
 					iMap.put("MBPort",tagContent);
 					break;
+				case "MBTimeID":
+					iMap.put("MBTimeID",tagContent);
+					break;
+					
 				}
 				break;
 			case XMLStreamConstants.START_DOCUMENT:
