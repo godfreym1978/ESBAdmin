@@ -17,8 +17,10 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 
@@ -42,6 +44,10 @@ import com.jcraft.jsch.Session;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 public class Util {
 
@@ -1026,5 +1032,51 @@ public class Util {
 			
 		}
 
+	    public void writeXML(String fileName, String rootElement, List<Map> newList) {
+	        XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+	        try{
+	            XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(new FileOutputStream(fileName), "UTF-8");
+	            //start writing xml file
+	            xmlStreamWriter.writeStartDocument("UTF-8", "1.0");
+	            xmlStreamWriter.writeStartElement(rootElement);
+	             
+	            for(int i =0;i <newList.size(); i++){
+
+	            	if(rootElement.equals("MQEnvironment")){
+	            		xmlStreamWriter.writeStartElement("QueueManager");
+	            	}
+	            	
+	            	if(rootElement.equals("MBEnvironment")){
+	            		xmlStreamWriter.writeStartElement("Broker");
+	            	}
+		            
+	                //write other elements
+	                Set newSet = newList.get(i).keySet();
+	                Iterator iter = newSet.iterator();
+	                String newStr = new String();
+	            	
+	            	while(iter.hasNext()){
+	            		//System.out.println(iter.next());
+	            		newStr = iter.next().toString();
+	                    xmlStreamWriter.writeStartElement(newStr);
+	                    xmlStreamWriter.writeCharacters(newList.get(i).get(newStr).toString());
+	                    xmlStreamWriter.writeEndElement();
+	            	}
+	            	xmlStreamWriter.writeEndElement();
+	            }
+	            //write end tag of Employee element
+	            xmlStreamWriter.writeEndElement();
+
+	            //write end document
+	            xmlStreamWriter.writeEndDocument();
+	             
+	            //flush data to file and close writer
+	            xmlStreamWriter.flush();
+	            xmlStreamWriter.close();
+	             
+	        }catch(XMLStreamException | FileNotFoundException e){
+	            e.printStackTrace();
+	        }
+	    }
 
 }

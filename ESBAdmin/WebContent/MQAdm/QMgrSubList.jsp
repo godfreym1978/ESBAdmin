@@ -20,8 +20,6 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="org.apache.commons.csv.*"%>
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
-
-
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">

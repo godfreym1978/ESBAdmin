@@ -66,9 +66,9 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		String UserID = session.getAttribute("UserID").toString();
 		Util newUtil = new Util();
 		
-		//MBCommons newMBCmn = new MBCommons();
+		MBCommons newMBCmn = new MBCommons();
 		File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+
-									File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnv.txt");
+									File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnvironment.xml");
 		if(!userFile.exists()){
 			
 			try{
@@ -77,12 +77,30 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				BrokerProxy brkProxy = BrokerProxy.getInstance(bcp);
 				brkProxy.disconnect();
 				userFile.createNewFile();
+				
+				//List<Map> MQList = newMQAdUtil.getMBEnv(UserID);
+				
+				//Map<String, String> qmMap = new Map();
+				
+				Map<String,String> mbMap = new HashMap<String, String>();
+				
+				mbMap.put("MBName", request.getParameter("brkName"));
+				mbMap.put("MBHost", request.getParameter("brkHost"));
+				mbMap.put("MBPort", request.getParameter("brkPort"));
+				mbMap.put("MBEnv", request.getParameter("brkEnv"));
+				
+				List<Map> newList = new ArrayList();
+				newList.add(mbMap);
+				newUtil.writeXML(userFile.getAbsolutePath(), "MBEnvironment", newList); 	
+
+				/*
 				BufferedWriter output = new BufferedWriter(new FileWriter(userFile));
 				output.write(request.getParameter("brkEnv")+";"+ 
 				request.getParameter("brkName")+"|"+
 				request.getParameter("brkHost")+":"+
 				request.getParameter("brkPort"));
 				output.close();
+				*/
 				%>
 					<center>
     				The broker runtime with above details has been successfully registered.<br>
@@ -100,11 +118,28 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
     			<%	
 				}
 		}else{
+			
+			List<Map> MBList = newMBCmn.getMBEnv(UserID);
+			
+			/*
 			String newBrkEntry = new String(request.getParameter("brkEnv")+";"+ 
 				request.getParameter("brkName")+"|"+
 				request.getParameter("brkHost")+":"+
 				request.getParameter("brkPort"));
-			if(FileUtils.readFileToString(userFile).contains(newBrkEntry)){
+			*/
+			
+			boolean isSetupFlag = false;
+			
+			for(int i=0;i<MBList.size();i++){
+				if(MBList.get(i).get("MBEnv").equals(request.getParameter("brkEnv"))&&
+						MBList.get(i).get("MBHost").equals(request.getParameter("brkHost"))&&
+						MBList.get(i).get("MBPort").equals(request.getParameter("brkPort"))&&
+						MBList.get(i).get("MBName").equals(request.getParameter("brkName"))){
+					isSetupFlag = true;
+				}
+			}
+
+			if(isSetupFlag){
 			%>
 					<center>
     				The broker runtime with above details has already been registered.<br>
@@ -117,9 +152,22 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 								request.getParameter("brkHost"), Integer.parseInt(request.getParameter("brkPort")), "");
 					BrokerProxy brkProxy = BrokerProxy.getInstance(bcp);
 					brkProxy.disconnect();
+					/*
 					FileWriter fw = new FileWriter(userFile,true);
 					fw.write("\n"+newBrkEntry);
 					fw.close();
+					*/
+					
+					Map<String,String> mbMap = new HashMap<String, String>();
+					
+					mbMap.put("MBEnv", request.getParameter("brkEnv"));
+					mbMap.put("MBHost", request.getParameter("brkHost"));
+					mbMap.put("MBPort", request.getParameter("brkPort"));
+					mbMap.put("MBName", request.getParameter("brkName"));
+					
+					MBList.add(mbMap);
+					newUtil.writeXML(userFile.getAbsolutePath(), "MBEnvironment", MBList); 	
+
 					%>
 					<center>
     				The broker runtime with above details has been successfully registered.<br>
@@ -167,10 +215,14 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				</tr>
 			
 			<%
-			for (String line : FileUtils.readLines(userFile)) {
-				env = line.substring(0,line.indexOf(";"));
-				hostName = line.substring(line.indexOf("|")+1, line.indexOf(":"));
-				portNum = Integer.parseInt(line.substring(line.indexOf(":")+1,line.length()));
+			
+			List<Map> MBList = newMBCmn.getMBEnv(UserID);
+			for(int i=0; i<MBList.size();i++){
+
+				env = MBList.get(i).get("MBEnv").toString();
+				hostName = MBList.get(i).get("MBHost").toString();
+				portNum = Integer.parseInt(MBList.get(i).get("MBPort").toString());
+				
 				try{
 					//brkProxy = newMBCmn.getBrokerProxy(hostName, portNum);
 					BrokerConnectionParameters bcp = new MQBrokerConnectionParameters(

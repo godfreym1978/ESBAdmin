@@ -70,7 +70,12 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		
 		//MBCommons newMBCmn = new MBCommons();
 		File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+
-									File.separator+session.getAttribute("UserID").toString()+File.separator+"QMEnv.txt");
+									File.separator+session.getAttribute("UserID").toString()+File.separator+"MQEnvironment.xml");
+		
+		
+		MQAdminUtil newMQAdUtil = new MQAdminUtil();
+		PCFCommons newPCFCom = new PCFCommons();
+
 		if(!userFile.exists()){
 			try{
 				MQEnvironment.channel = request.getParameter("qmgrChl");
@@ -81,14 +86,33 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				qmgr.disconnect();
 
 				userFile.createNewFile();
-				BufferedWriter output = new BufferedWriter(new FileWriter(userFile));
-
-				output.write(request.getParameter("qmgrHost")+","+
-				request.getParameter("qmgrName")+","+
-				request.getParameter("qmgrPort")+","+
-				request.getParameter("qmgrChl"));
 				
-				output.close();
+				//List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+				
+				//Map<String, String> qmMap = new Map();
+				
+				Map<String,String> qmMap = new HashMap<String, String>();
+				
+				qmMap.put("QMName", request.getParameter("qmgrName"));
+				qmMap.put("QMHost", request.getParameter("qmgrHost"));
+				qmMap.put("QMPort", request.getParameter("qmgrPort"));
+				qmMap.put("QMChannel", request.getParameter("qmgrChl"));
+				
+				List<Map> newList = new ArrayList();
+				newList.add(qmMap);
+				newUtil.writeXML(userFile.getAbsolutePath(), "MQEnvironment", newList); 	
+				
+				/*
+				for (int i=0; i<MQList.size(); i++) {
+					if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+						qHost = MQList.get(i).get("QMHost").toString();
+						qPort = MQList.get(i).get("QMPort").toString();
+						qChannel = MQList.get(i).get("QMChannel").toString();
+						break;
+					}
+				}
+				*/
+			
 				%>
 					<center>
     				The Queue Manager with above details has been successfully registered.<br>
@@ -106,12 +130,28 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
     			<%	
 				}
 		}else{
+			
+			List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+			
+			//Map<String, String> qmMap = new Map();
+			
+			/*
 			String newQMgrEntry = new String(request.getParameter("qmgrHost")+","+
 							request.getParameter("qmgrName")+","+
 							request.getParameter("qmgrPort")+","+
 							request.getParameter("qmgrChl"));
-
-			if(FileUtils.readFileToString(userFile).contains(newQMgrEntry)){
+			*/
+			boolean isSetupFlag = false;
+			
+			for(int i=0;i<MQList.size();i++){
+				if(MQList.get(i).get("QMName").equals(request.getParameter("qmgrName"))&&
+						MQList.get(i).get("QMHost").equals(request.getParameter("qmgrHost"))&&
+						MQList.get(i).get("QMPort").equals(request.getParameter("qmgrPort"))&&
+						MQList.get(i).get("QMChannel").equals(request.getParameter("qmgrChl"))){
+					isSetupFlag = true;
+				}
+			}
+			if(isSetupFlag){
 			%>
 				<center>
     			The Queue Manager with above details has already been registered.<br>
@@ -120,15 +160,28 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			<%					
 			}else{
 				try{
+
 					MQEnvironment.channel = request.getParameter("qmgrChl");
 					MQEnvironment.port = Integer.parseInt(request.getParameter("qmgrPort"));
 					MQEnvironment.hostname = request.getParameter("qmgrHost");
 					MQQueueManager qmgr = new MQQueueManager(request.getParameter("qmgrName"));
 					qmgr.disconnect();
-		
+
+					Map<String,String> qmMap = new HashMap<String, String>();
+					
+					qmMap.put("QMName", request.getParameter("qmgrName"));
+					qmMap.put("QMHost", request.getParameter("qmgrHost"));
+					qmMap.put("QMPort", request.getParameter("qmgrPort"));
+					qmMap.put("QMChannel", request.getParameter("qmgrChl"));
+					
+					MQList.add(qmMap);
+					newUtil.writeXML(userFile.getAbsolutePath(), "MQEnvironment", MQList); 	
+
+					/*
 					BufferedWriter output = new BufferedWriter(new FileWriter(userFile,true));
 					output.write("\n"+newQMgrEntry);
 					output.close();
+					*/
 					%>
 						<center>
 	    				The Queue Manager with above details has been successfully registered.<br>
