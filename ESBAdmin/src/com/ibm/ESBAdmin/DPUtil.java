@@ -54,7 +54,12 @@ public class DPUtil {
 
 			Device device1 = (Device) progressContainer.getResult();
 
-			ManagedSet ms = new ManagedSet("mgSet");
+			ManagedSet ms = null;
+			if (manager.getManagedSets().length > 0){
+				ms = manager.getManagedSet("mgSet");
+			}else{
+				ms = new ManagedSet("mgSet");
+			}
 			ms.addDevice(device1);
 
 			int deviceCtr = 0;
