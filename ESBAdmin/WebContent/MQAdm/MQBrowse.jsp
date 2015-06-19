@@ -16,7 +16,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ page import="com.ibm.ESBAdmin.*" %>
+<%@ page import="com.ibm.esbadmin.*"%>
 <%@ page import="java.util.*" %>
 <%@ page import="java.sql.*" %>
 <html>
@@ -47,10 +47,10 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				int iCount = 0;
 				int inMsgCtr = 0;
 
-				Util newUtil = new Util();
+				MQAdminUtil newMQAdUtil = new MQAdminUtil();
 				ArrayList<String> alQueueList = null;
 				System.out.println(Calendar.getInstance().getTime());
-				alQueueList = newUtil.browseQueue(qMgr, qName);
+				alQueueList = newMQAdUtil.browseQueue(qMgr, qName);
 				System.out.println(Calendar.getInstance().getTime());
 				iCount = alQueueList.size();
 				if (iCount != 0) {

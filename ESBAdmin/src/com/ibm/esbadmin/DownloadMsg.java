@@ -11,7 +11,7 @@
  */
 /********************************************************************************/
 
-package com.ibm.ESBAdmin;
+package com.ibm.esbadmin;
 
 import java.io.File;
 import java.io.IOException;

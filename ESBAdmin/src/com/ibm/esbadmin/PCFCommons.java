@@ -11,7 +11,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 */
 /********************************************************************************/
 
-package com.ibm.ESBAdmin;
+package com.ibm.esbadmin;
 
 import java.io.IOException;
 import java.lang.reflect.Array;

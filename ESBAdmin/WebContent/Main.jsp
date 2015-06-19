@@ -12,7 +12,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 */
 /********************************************************************************/
  -->
-<%@ page import="com.ibm.ESBAdmin.*"%>
+<%@ page import="com.ibm.esbadmin.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.sql.*"%>
 <%@ page

@@ -16,7 +16,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page import="java.io.*"%>
-<%@ page import="com.ibm.ESBAdmin.*"%>
+<%@ page import="com.ibm.esbadmin.*"%>
 <%@ page import="com.ibm.broker.config.proxy.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="org.apache.commons.csv.*"%>

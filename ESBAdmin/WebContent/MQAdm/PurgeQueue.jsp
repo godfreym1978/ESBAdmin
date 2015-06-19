@@ -15,7 +15,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
  <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ page import="com.ibm.ESBAdmin.*"%>
+<%@ page import="com.ibm.esbadmin.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="org.apache.commons.csv.*"%>
 <%@ page
@@ -62,9 +62,8 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			break;
 		}
 	}
-
-			Util newUtil = new Util();
-			PCFCommons newPFCCM = new PCFCommons();
+	
+	PCFCommons newPFCCM = new PCFCommons();
 			
 				String qName = request.getParameter("QName");
 				try {
@@ -72,7 +71,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 						int msgPurged = newPFCCM.purgeQueue(qHost,Integer.parseInt(qPort), qName, qChannel);
 						
 						if (msgPurged<0){
-							msgPurged = newUtil.purgeQueue(qMgr, qName);
+							msgPurged = newMQAdUtil.purgeQueue(qMgr, qName);
 							%>
 							<b><%=msgPurged%></b> Messages Purged from the Queue - <b><%=qName%></b>
 							- Queue Manager <b><%=qMgr%></b>

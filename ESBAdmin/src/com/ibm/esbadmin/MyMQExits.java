@@ -1,4 +1,4 @@
-package com.ibm.ESBAdmin;
+package com.ibm.esbadmin;
 
 
 import java.io.BufferedWriter;

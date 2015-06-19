@@ -3,15 +3,15 @@
 /* Project: ESBAdmin */
 /* Author: Godfrey Peter Menezes */
 /* 
-Copyright © 2015 Godfrey P Menezes
-All rights reserved. This code or any portion thereof
-may not be reproduced or used in any manner whatsoever
-without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
+ Copyright © 2015 Godfrey P Menezes
+ All rights reserved. This code or any portion thereof
+ may not be reproduced or used in any manner whatsoever
+ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
-*/
+ */
 /********************************************************************************/
 
-package com.ibm.ESBAdmin;
+package com.ibm.esbadmin;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 
 /**
- * Servlet implementation class DownloadMsg
+ * Servlet implementation class DownloadMsg.
  */
 @WebServlet("/MBAdmin")
 public class MBAdmin extends HttpServlet {
@@ -47,8 +47,8 @@ public class MBAdmin extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(final HttpServletRequest request,
+			final HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		// ServletContext ctx = getServletContext();
 		try {
@@ -56,22 +56,20 @@ public class MBAdmin extends HttpServlet {
 			MBCommons newMBComm = new MBCommons();
 			String action = request.getParameter("action").toString();
 			String userID = session.getAttribute("UserID").toString();
-			
+
 			File userFile = new File(System.getProperty("catalina.base")
-					+ File.separator + "ESBAdmin" + File.separator
-					+ userID
+					+ File.separator + "ESBAdmin" + File.separator + userID
 					+ File.separator + "MBEnv.txt");
 			String env = null;
 
-			
 			for (String line : FileUtils.readLines(userFile)) {
 				CSVParser parser = CSVParser.parse(line, CSVFormat.RFC4180);
 				for (CSVRecord csvRecord : parser) {
-						env = csvRecord.get(0);
-						break;
-				}							
+					env = csvRecord.get(0);
+					break;
+				}
 			}
-			
+
 			if (userID.indexOf("admin") > -1
 					|| (env.equals("DEV") || env.equals("QA"))
 					&& userID.indexOf("dev") > -1) {
@@ -109,7 +107,8 @@ public class MBAdmin extends HttpServlet {
 						System.out.println("Deleting MF - " + mfName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.DeleteEGObject(brkName, egName, mfName, userID);
+						newMBComm.DeleteEGObject(brkName, egName, mfName,
+								userID);
 					}
 				} else if (action.indexOf("APPL") == 0) {
 
@@ -121,17 +120,20 @@ public class MBAdmin extends HttpServlet {
 						System.out.println("Starting Application - " + applName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.StartApplication(brkName, egName, applName, userID);
+						newMBComm.StartApplication(brkName, egName, applName,
+								userID);
 					} else if (action.indexOf("stop") > 0) {
 						System.out.println("Stopping Application - " + applName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.StopApplication(brkName, egName, applName, userID);
+						newMBComm.StopApplication(brkName, egName, applName,
+								userID);
 					} else {
 						System.out.println("Deleting Application - " + applName
 								+ "/ Execution Group - " + egName
 								+ " /Broker - " + brkName);
-						newMBComm.DeleteEGObject(brkName, egName, applName, userID);
+						newMBComm.DeleteEGObject(brkName, egName, applName,
+								userID);
 					}
 				} else if (action.indexOf("LIB") == 0) {
 

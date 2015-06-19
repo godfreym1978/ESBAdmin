@@ -1,6 +1,5 @@
-/********************************************************************************/
-/* */
 /* Project: ESBAdmin */
+/* */
 /* Author: Godfrey Peter Menezes */
 /* 
  Copyright © 2015 Godfrey P Menezes
@@ -9,13 +8,11 @@
  without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
  */
-/********************************************************************************/
 
-package com.ibm.ESBAdmin;
+package com.ibm.esbadmin;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,9 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.mq.MQException;
 
-/**
- * Servlet implementation class DownloadMsg
- */
+/* Servlet implementation class DownloadMsg */
 @WebServlet("/DownloadMsgFromQueue")
 public class DownloadMsgFromQueue extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -45,6 +40,7 @@ public class DownloadMsgFromQueue extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		
 		// TODO Auto-generated method stub
 		// ServletContext ctx = getServletContext();
 		String qMgr = request.getParameter("qMgr");
@@ -55,7 +51,7 @@ public class DownloadMsgFromQueue extends HttpServlet {
 		response.setHeader("Content-Disposition", "attachment;filename="
 				+ qName + "-" + message);
 
-		Util newUtil = new Util();
+		MQAdminUtil newMQAdmUtil = new MQAdminUtil();
 		String data = new String();
 		/*
 		 * System.out.println(message);
@@ -63,7 +59,7 @@ public class DownloadMsgFromQueue extends HttpServlet {
 		 * System.out.println(newUtil.byteArrayToHexString(message.getBytes()));
 		 */
 		try {
-			data = newUtil.displayMessage(qMgr, qName, message);
+			data = newMQAdmUtil.displayMessage(qMgr, qName, message);
 		} catch (MQException e) {
 			System.out.println("Error in download of data");
 		}

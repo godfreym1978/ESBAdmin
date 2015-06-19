@@ -14,7 +14,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
  -->
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="com.ibm.ESBAdmin.*" %>
+<%@ page import="com.ibm.esbadmin.*"%>
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
 <%@ page import="org.apache.commons.csv.*"%>
@@ -48,7 +48,7 @@ if(session.getAttribute("UserID")==null){%>
 	
 		MQAdminUtil newMQAdUtil = new MQAdminUtil();
 		Util newUtil = new Util();
-		PCFCommons newPCFCom = new PCFCommons();
+		PCFCommons newPCFCmn = new PCFCommons();
 
 		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
 	
@@ -60,7 +60,7 @@ if(session.getAttribute("UserID")==null){%>
 				break;
 			}
 		}
-		List<Map> subDtls = newPCFCom.ListSubStatus(qHost, Integer.parseInt(qPort), subName, qChannel);
+		List<Map> subDtls = newPCFCmn.ListSubStatus(qHost, Integer.parseInt(qPort), subName, qChannel);
 		%>
 
 		<center><b><u>List of Topics in Queue Manager - <%=qMgr %></u></b></center><br>

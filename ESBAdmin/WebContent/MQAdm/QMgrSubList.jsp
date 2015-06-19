@@ -14,7 +14,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
  -->
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="com.ibm.ESBAdmin.*" %>
+<%@ page import="com.ibm.esbadmin.*"%>
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
 <%@ page import="org.apache.commons.csv.*"%>
@@ -46,7 +46,7 @@ if(session.getAttribute("UserID")==null){%>
 	
 		MQAdminUtil newMQAdUtil = new MQAdminUtil();
 		Util newUtil = new Util();
-		PCFCommons newPCFCom = new PCFCommons();
+		PCFCommons newPCFCmn = new PCFCommons();
 
 		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
 	
@@ -59,8 +59,7 @@ if(session.getAttribute("UserID")==null){%>
 			}
 		}
 
-		PCFCommons test = new PCFCommons();
-		List<Map> topicDtls = newPCFCom.ListSubNames(qHost, Integer.parseInt(qPort), qChannel);
+		List<Map> topicDtls = newPCFCmn.ListSubNames(qHost, Integer.parseInt(qPort), qChannel);
 		int listCtr =0;
 		int listCount =topicDtls.size();
 		%>

@@ -15,7 +15,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ page import="com.ibm.ESBAdmin.*" %>
+<%@ page import="com.ibm.esbadmin.*"%>
 <%@ page import="java.util.*" %>
 
 <html>
@@ -46,9 +46,9 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			String qName = request.getParameter("qName");
 			String message = request.getParameter("message");
 
-			Util newUtil = new Util();
+			MQAdminUtil newMQAdmUtil = new MQAdminUtil();
 			//String returnMsg = 
-			newUtil.readMessage(qMgr, qName, message);
+			newMQAdmUtil.readMessage(qMgr, qName, message);
 		%>
 		<table class="gridtable">
 			<tr>

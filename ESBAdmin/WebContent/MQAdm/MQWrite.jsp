@@ -15,7 +15,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
  <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ page import="com.ibm.ESBAdmin.*" %>
+<%@ page import="com.ibm.esbadmin.*"%>
 <%@ page import="java.util.*" %>
 <%@ page import="java.net.*,java.io.*"%>  
 <%@ page import="org.apache.commons.fileupload.*,org.apache.commons.io.*" %>
@@ -65,8 +65,8 @@ if(session.getAttribute("UserID")==null){
 				File outfile = new File(System.getProperty("catalina.base")+File.separator+"upload.txt");
 				file.write(outfile);
 
-				Util newUtil = new Util();
-				String returnMsg = newUtil.writeMessageToQueue(qMgr, qName,
+				MQAdminUtil newMQAdmUtil = new MQAdminUtil();
+				String returnMsg = newMQAdmUtil.writeMessageToQueue(qMgr, qName,
 						FileUtils.readFileToString(outfile));
 			%>
 			<table border=1 align=center width=100% class="gridtable">

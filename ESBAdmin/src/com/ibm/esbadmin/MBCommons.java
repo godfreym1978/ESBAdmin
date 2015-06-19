@@ -11,7 +11,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 */
 /********************************************************************************/
 
-package com.ibm.ESBAdmin;
+package com.ibm.esbadmin;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,26 +46,28 @@ import com.ibm.broker.config.proxy.MessageFlowProxy;
 
 public class MBCommons {
 
-	public BrokerProxy getBrokerProxy(String hostName, int portNum)
-			throws ConfigManagerProxyException {
+	public final BrokerProxy getBrokerProxy(final String hostName, 
+			final int portNum) throws ConfigManagerProxyException {
 		BrokerProxy brkProxy = null;
 
-		BrokerConnectionParameters brkConnParam = new MQBrokerConnectionParameters(
-				hostName, portNum, "");
+		BrokerConnectionParameters brkConnParam = 
+				new MQBrokerConnectionParameters(hostName, portNum, "");
 
 		brkProxy = BrokerProxy.getInstance(brkConnParam);
 
 		return brkProxy;
 	}
 
-	public String displayMessageApplnRunState(BrokerProxy brkProxy, String egName,
-			String appName) {
+	public String displayMessageApplnRunState(final BrokerProxy brkProxy, 
+			final String egName, final String appName) {
 		String returnStat = new String();
 		try {
-			ExecutionGroupProxy egProxy = brkProxy.getExecutionGroupByName(egName);
+			ExecutionGroupProxy egProxy = 
+					brkProxy.getExecutionGroupByName(egName);
 
 			if (egProxy != null) {
-				ApplicationProxy applnProxy = egProxy.getApplicationByName(appName);
+				ApplicationProxy applnProxy = 
+						egProxy.getApplicationByName(appName);
 
 				if (applnProxy != null) {
 					boolean isRunning = applnProxy.isRunning();
@@ -92,14 +94,16 @@ public class MBCommons {
 		return returnStat;
 	}
 
-	public String displayMessageFlowRunState(BrokerProxy brkProxy, String egName,
-			String flowName) {
+	public String displayMessageFlowRunState(BrokerProxy brkProxy, 
+			String egName, String flowName) {
 		String returnStat = new String();
 		try {
-			ExecutionGroupProxy egProxy = brkProxy.getExecutionGroupByName(egName);
+			ExecutionGroupProxy egProxy = 
+					brkProxy.getExecutionGroupByName(egName);
 
 			if (egProxy != null) {
-				MessageFlowProxy mfProxy = egProxy.getMessageFlowByName(flowName);
+				MessageFlowProxy mfProxy = 
+						egProxy.getMessageFlowByName(flowName);
 
 				if (mfProxy != null) {
 					boolean isRunning = mfProxy.isRunning();
@@ -128,7 +132,8 @@ public class MBCommons {
 	public ArrayList getExecutionGroupDetails(BrokerProxy brkProxy, String egName) {
 		ArrayList<ApplicationProxy> egListDetails = null;
 		try {
-			ExecutionGroupProxy egProxy = brkProxy.getExecutionGroupByName(egName);
+			ExecutionGroupProxy egProxy = 
+					brkProxy.getExecutionGroupByName(egName);
 			egListDetails = Collections.list(egProxy.getApplications(null));
 
 		} catch (ConfigManagerProxyPropertyNotInitializedException ex) {
@@ -151,7 +156,8 @@ public class MBCommons {
 	public ArrayList getMFDetails(BrokerProxy brkProxy, String egName) {
 		ArrayList<MessageFlowProxy> mfListDetails = null;
 		try {
-			ExecutionGroupProxy egProxy = brkProxy.getExecutionGroupByName(egName);
+			ExecutionGroupProxy egProxy = 
+					brkProxy.getExecutionGroupByName(egName);
 			mfListDetails = Collections.list(egProxy.getMessageFlows(null));
 
 		} catch (ConfigManagerProxyPropertyNotInitializedException ex) {
@@ -166,7 +172,8 @@ public class MBCommons {
 		DeployResult dr = null;
 
 		try {
-			ExecutionGroupProxy egProxy = brkProxy.getExecutionGroupByName(egName);
+			ExecutionGroupProxy egProxy = 
+					brkProxy.getExecutionGroupByName(egName);
 			dr = egProxy.deploy(barFileName, true, 30000);
 		} catch (Exception e) {
 			e.printStackTrace();
