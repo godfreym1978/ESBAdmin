@@ -48,7 +48,7 @@ public class DownloadQMgr extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		HttpSession httpSession = request.getSession(true);
-		if (httpSession.getAttribute("UserID")!=null){
+		if (httpSession.getAttribute("UserID") != null){
 			// TODO Auto-generated method stub
 			response.setContentType("text/plain");
 			response.setHeader("Content-Disposition", "attachment;filename="
@@ -64,12 +64,12 @@ public class DownloadQMgr extends HttpServlet {
 			String qChannel = null;
 
 			MQAdminUtil newMQAdUtil = new MQAdminUtil();
-			List<Map> MQList = new ArrayList();
+			List<Map<String, Object>> MQList = new ArrayList();
 
 			try {
 				MQList = newMQAdUtil.getQMEnv(UserID);
 
-				for (int i=0; i<MQList.size(); i++) {
+				for (int i=0; i< MQList.size(); i++) {
 					if(MQList.get(i).get("QMName").toString().equals(qMgr)){
 						qHost = MQList.get(i).get("QMHost").toString();
 						qPort = MQList.get(i).get("QMPort").toString();
@@ -79,7 +79,7 @@ public class DownloadQMgr extends HttpServlet {
 				}
 				PCFCommons pcfCM = new PCFCommons();
 
-				List<Map> ListQueueNames = pcfCM.ListQueueNamesDtl(qHost,
+				List<Map<String, Object>> ListQueueNames = pcfCM.ListQueueNamesDtl(qHost,
 						Integer.parseInt(qPort), qChannel);
 				for (int i = 0; i < ListQueueNames.size(); i++) {
 					qMgrBytes = String.valueOf(
@@ -90,7 +90,7 @@ public class DownloadQMgr extends HttpServlet {
 					outStream.write(qMgrBytes);
 				}
 
-				List<Map> listChannels = pcfCM.channelDetails(qHost,
+				List<Map<String, Object>> listChannels = pcfCM.channelDetails(qHost,
 						Integer.parseInt(qPort), qChannel);
 
 				for (int i = 0; i < listChannels.size(); i++) {
@@ -102,7 +102,7 @@ public class DownloadQMgr extends HttpServlet {
 					outStream.write(qMgrBytes);
 				}
 
-				List<Map> listListener = pcfCM.listenerDetails(qHost,
+				List<Map<String, Object>> listListener = pcfCM.listenerDetails(qHost,
 						Integer.parseInt(qPort), qChannel);
 
 				for (int i = 0; i < listListener.size(); i++) {
@@ -113,7 +113,7 @@ public class DownloadQMgr extends HttpServlet {
 							.getBytes();
 					outStream.write(qMgrBytes);
 				}
-				List<Map> listTopic = pcfCM.ListTopicNames(qHost,
+				List<Map<String, Object>> listTopic = pcfCM.ListTopicNames(qHost,
 						Integer.parseInt(qPort), qChannel);
 
 				for (int i = 0; i < listTopic.size(); i++) {
@@ -124,7 +124,7 @@ public class DownloadQMgr extends HttpServlet {
 							.getBytes();
 					outStream.write(qMgrBytes);
 				}
-				List<Map> listSubs = pcfCM.ListSubNames(qHost,
+				List<Map<String, Object>> listSubs = pcfCM.ListSubNames(qHost,
 						Integer.parseInt(qPort), qChannel);
 
 				for (int i = 0; i < listSubs.size(); i++) {

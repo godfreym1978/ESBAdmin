@@ -56,15 +56,11 @@ public class LoadMsgsToQueue extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException{
+	protected final void doPost(final HttpServletRequest request, 
+			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//ServletContext ctx = getServletContext();
 		
-		/*
-		response.setContentType("text/plain");
-		response.setHeader("Content-Disposition",
-	                     "attachment;filename="+qName+"-"+currentTimestamp);
-		*/
 		int msgCounter = 0;
 		Util newUtil = new Util();
 
@@ -97,7 +93,7 @@ public class LoadMsgsToQueue extends HttpServlet {
 			FileItem file = (FileItem) items.get(0);
 			String source = file.getName();
 
-			File outfile = new File(System.getProperty("catalina.base")+File.separator+"upload.txt");
+			File outfile = new File(System.getProperty("catalina.base") + File.separator + "upload.txt");
 			try{
 				file.write(outfile);
 			}catch(Exception e){

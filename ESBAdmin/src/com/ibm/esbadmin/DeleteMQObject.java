@@ -1,19 +1,16 @@
-/********************************************************************************/
-/* */
+package com.ibm.esbadmin;
+
 /* Project: ESBAdmin */
 /* Author: Godfrey Peter Menezes */
 /* 
-Copyright Â© 2015 Godfrey P Menezes
+Copyright © 2015 Godfrey P Menezes
 All rights reserved. This code or any portion thereof
 may not be reproduced or used in any manner whatsoever
 without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 
 */
-/********************************************************************************/
 
-package com.ibm.esbadmin;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.stream.XMLStreamException;
-
-import org.apache.commons.csv.*;
-import org.apache.commons.io.*;
 
 
 /**
@@ -65,7 +59,7 @@ public class DeleteMQObject extends HttpServlet {
 		String qChannel = null;
 
 		MQAdminUtil newMQAdUtil = new MQAdminUtil();
-		List<Map> MQList = new ArrayList();
+		List<Map<String, Object>> MQList = new ArrayList();
 		try {
 			MQList = newMQAdUtil.getQMEnv(UserID);
 		} catch (XMLStreamException e1) {
@@ -73,35 +67,40 @@ public class DeleteMQObject extends HttpServlet {
 			e1.printStackTrace();
 		}
 
-		for (int i=0; i<MQList.size(); i++) {
-			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+		for (int i=0; i < MQList.size(); i++) {
+			if (MQList.get(i).get("QMName").toString().equals(qMgr)) {
 				qHost = MQList.get(i).get("QMHost").toString();
 				qPort = MQList.get(i).get("QMPort").toString();
 				qChannel = MQList.get(i).get("QMChannel").toString();
 				break;
 			}
 		}
-
-		if (httpSession.getAttribute("UserID").toString().indexOf("admin") > -1){
-			try{
-				if(!request.getParameter("qName").isEmpty())
-					newPCFCommons.deleteQueue(qHost, Integer.parseInt(qPort), request.getParameter("qName"),qChannel);
-				if(!request.getParameter("qChannel").isEmpty())
-					newPCFCommons.deleteChannel(qHost, Integer.parseInt(qPort), request.getParameter("qChannel"),qChannel);
-				if(!request.getParameter("qListener").isEmpty())
-					newPCFCommons.deleteListener(qHost, Integer.parseInt(qPort), request.getParameter("qListener"),qChannel);
-				if(!request.getParameter("qTopic").isEmpty()||!request.getParameter("qTopicString").isEmpty())
-					newPCFCommons.deleteTopic(qHost, Integer.parseInt(qPort), request.getParameter("qTopic"),request.getParameter("qTopicString"),qChannel);
-				if(!request.getParameter("qSubscription").isEmpty())
-					newPCFCommons.deleteSub(qHost, Integer.parseInt(qPort), request.getParameter("qSubscription"),qChannel);
-				
-			}catch(Exception e){
+		if (httpSession.getAttribute("UserID").toString().indexOf("admin") > -1) {
+			try {
+				if (!request.getParameter("qName").isEmpty()) {
+					newPCFCommons.deleteQueue(qHost, Integer.parseInt(qPort), 
+							request.getParameter("qName"), qChannel);
+				}
+				if (!request.getParameter("qChannel").isEmpty()) {
+					newPCFCommons.deleteChannel(qHost, Integer.parseInt(qPort), 
+							request.getParameter("qChannel"), qChannel);
+				}
+				if (!request.getParameter("qListener").isEmpty()) {
+					newPCFCommons.deleteListener(qHost, Integer.parseInt(qPort), 
+							request.getParameter("qListener"), qChannel);
+				}
+				if (!request.getParameter("qTopic").isEmpty() || !request.getParameter("qTopicString").isEmpty()) {
+					newPCFCommons.deleteTopic(qHost, Integer.parseInt(qPort), 
+							request.getParameter("qTopic"), request.getParameter("qTopicString"), qChannel);
+				}
+				if (!request.getParameter("qSubscription").isEmpty()) {
+					newPCFCommons.deleteSub(qHost, Integer.parseInt(qPort), 
+							request.getParameter("qSubscription"), qChannel);
+				}
+			}catch(Exception e) {
 				System.out.println("Error in deleting object");
 			}
 		}
-
-
-		System.gc();
 		response.sendRedirect(request.getHeader("referer"));
 	}
 

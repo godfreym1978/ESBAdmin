@@ -62,7 +62,6 @@ public class PCFCommons {
 				System.out.print("default queue manager at \"" + qmgrHost
 						+ "\", port \"" + qmgrPort + "\"");
 			}
-
 		}
 		return;
 	}
@@ -152,11 +151,13 @@ public class PCFCommons {
 
 	}
 
-	public List<Map> ListQueueNamesDtl(String qmgrHost, int qmgrPort, String qChannel)
+	public List<Map<String, Object>> ListQueueNamesDtl(String qmgrHost, 
+			int qmgrPort, String qChannel)
 			throws PCFException, MQDataException, IOException {
 
-		List<Map> queueListDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		List<Map<String, Object>> queueListDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -195,11 +196,12 @@ public class PCFCommons {
 		return queueListDtl;
 	}
 
-	public List<Map> ListTopicNames(String qmgrHost, int qmgrPort, String qChannel)
+	public List<Map<String, Object>> ListTopicNames(String qmgrHost, int qmgrPort, String qChannel)
 			throws PCFException, MQDataException, IOException {
 
-		List<Map> topicListDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		List<Map<String, Object>> topicListDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -236,11 +238,12 @@ public class PCFCommons {
 		return topicListDtl;
 	}
 
-	public List<Map> ListTopicStatus(String qmgrHost, int qmgrPort,
+	public List<Map<String, Object>> ListTopicStatus(String qmgrHost, int qmgrPort,
 			String topicString, String qChannel) throws PCFException, MQDataException, IOException {
 
-		List<Map> topicListDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		List<Map<String, Object>> topicListDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -481,10 +484,11 @@ public class PCFCommons {
 		return topicListDtl;
 	}
 
-	public List<Map> ListSubNames(String qmgrHost, int qmgrPort, String qChannel)
+	public List<Map<String, Object>> ListSubNames(String qmgrHost, int qmgrPort, String qChannel)
 			throws PCFException, MQDataException, IOException {
-		List<Map> subListDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		List<Map<String, Object>> subListDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -539,10 +543,11 @@ public class PCFCommons {
 		return subListDtl;
 	}
 
-	public List<Map> ListSubStatus(String qmgrHost, int qmgrPort, String subName, String qChannel)
+	public List<Map<String, Object>> ListSubStatus(String qmgrHost, int qmgrPort, String subName, String qChannel)
 			throws PCFException, MQDataException, IOException {
-		List<Map> subListDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		List<Map<String, Object>> subListDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -650,10 +655,13 @@ public class PCFCommons {
 		agent.disconnect();
 	}
 
-	public List<Map> queueDetails(String qmgrHost, int qmgrPort,
+	public List<Map<String, Object>> queueDetails(String qmgrHost, int qmgrPort,
 			String queueName, String qChannel) throws PCFException, MQDataException, IOException {
-		List<Map> queueDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		
+		List<Map<String, Object>> queueDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
+
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -720,10 +728,12 @@ public class PCFCommons {
 		return queueDtl;
 	}
 
-	public List<Map> queueStatus(String qmgrHost, int qmgrPort, String queueName, String qChannel)
+	public List<Map<String, Object>> queueStatus(String qmgrHost, int qmgrPort, String queueName, String qChannel)
 			throws PCFException, MQDataException, IOException {
-		List<Map> queueDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		
+		List<Map<String, Object>> queueDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -758,10 +768,13 @@ public class PCFCommons {
 		return queueDtl;
 	}
 
-	public List<Map> channelDetails(String qmgrHost, int qmgrPort, String qChannel)
+	public List<Map<String, Object>> channelDetails(String qmgrHost, int qmgrPort, String qChannel)
 			throws PCFException, MQDataException, IOException {
-		List<Map> channelDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		
+		List<Map<String, Object>> channelDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
+
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -972,10 +985,13 @@ public class PCFCommons {
 		return channelDtl;
 	}
 
-	public List<Map> channelStatus(String qmgrHost, int qmgrPort, String chlName)
+	public List<Map<String, Object>> channelStatus(String qmgrHost, int qmgrPort, String chlName)
 			throws PCFException, MQDataException, IOException {
-		List<Map> channelStatus = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		
+		List<Map<String, Object>> channelStatus = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
+
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort, chlName);
 
@@ -1139,10 +1155,11 @@ public class PCFCommons {
 		return channelStatus;
 	}
 
-	public List<Map> listenerDetails(String qmgrHost, int qmgrPort,
+	public List<Map<String, Object>> listenerDetails(String qmgrHost, int qmgrPort,
 			String qChannel) throws PCFException, MQDataException, IOException {
-		List<Map> listenerDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		List<Map<String, Object>> listenerDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);
@@ -2942,10 +2959,13 @@ public class PCFCommons {
 		return sb;
 	}
 
-	public List<Map> qmgrDetails(String qmgrHost, int qmgrPort, String qmgrName, String qChannel)
+	public List<Map<String, Object>> qmgrDetails(String qmgrHost, int qmgrPort, String qmgrName, String qChannel)
 			throws PCFException, MQDataException, IOException {
-		List<Map> queueDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		
+		List<Map<String, Object>> queueDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
+
 
 		/*
 		 * int[] pcfParmAttrs = {MQConstants.MQIACF_ALL}; PCFParameter[]
@@ -3478,8 +3498,11 @@ public class PCFCommons {
 	public void moveQueue(String qmgrHost, int qmgrPort, String sourceQueue,
 			String targetQueue, String qChannel) throws PCFException, MQDataException,
 			IOException {
-		List<Map> subListDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+		
+		List<Map<String, Object>> subListDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
+
 
 		PCFMessageAgent agent = new PCFMessageAgent(qmgrHost, qmgrPort,
 				qChannel);

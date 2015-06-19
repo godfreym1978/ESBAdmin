@@ -55,9 +55,9 @@ public class DPUtil {
 			Device device1 = (Device) progressContainer.getResult();
 
 			ManagedSet ms = null;
-			if (manager.getManagedSets().length > 0){
+			if (manager.getManagedSets().length > 0) {
 				ms = manager.getManagedSet("mgSet");
-			}else{
+			} else {
 				ms = new ManagedSet("mgSet");
 			}
 			ms.addDevice(device1);
@@ -77,12 +77,12 @@ public class DPUtil {
 		}
 	}
 
-	public static List<Map> getDeviceDtl(){
+	public final List<Map<String, Object>> getDeviceDtl() {
+		List<Map<String, Object>> deviceListDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
-		List<Map> deviceListDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
-
-		try{
+		try {
 			// Get an instance of the manager. All subsequent calls to
 			// getInstance will return the same
 			// instance since the manager is a singleton.
@@ -98,9 +98,9 @@ public class DPUtil {
 			
 			//Manager manager = Manager.getInstance(null);
 			ManagedSet ms = manager.getManagedSet("mgSet");
-			Device devices[] = ms.getDeviceMembers();
-
-			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr ++) {
+			Device[] devices = ms.getDeviceMembers();
+			
+			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr++) {
 			
 				iMap = new HashMap();
 				
@@ -123,18 +123,19 @@ public class DPUtil {
 				deviceListDtl.add(iMap);
 				
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		return deviceListDtl;
 	}
 	
-	public List<Map> getDomains(String dpHostName){
-		List<Map> deviceListDtl = new ArrayList<Map>();
-		Map iMap = new HashMap();
+	public List<Map<String, Object>> getDomains(final String dpHostName) {
+		List<Map<String, Object>> deviceListDtl = 
+				new ArrayList<Map<String, Object>>();
+		Map<String, Object> iMap = new HashMap<String, Object>();
 
-		try{
+		try {
 			// Get an instance of the manager. All subsequent calls to
 			// getInstance will return the same
 			// instance since the manager is a singleton.
@@ -150,32 +151,34 @@ public class DPUtil {
 			
 			//Manager manager = Manager.getInstance(null);
 			ManagedSet ms = manager.getManagedSet("mgSet");
-			Device devices[] = ms.getDeviceMembers();
-			
-			
-			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr ++) {
-				if (devices[deviceCtr].getHostname().equalsIgnoreCase(dpHostName)){
+			Device[] devices = ms.getDeviceMembers();
+						
+			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr++) {
+				if (devices[deviceCtr].getHostname().equalsIgnoreCase(dpHostName)) {
 					StringCollection sc = devices[deviceCtr].getAllDomainNames();
 					//int domainCtr = 0;
-					for (int domainCtr = 0; domainCtr < sc.size(); domainCtr ++) {
+					for (int domainCtr = 0; 
+							domainCtr < sc.size(); domainCtr++) {
 						iMap = new HashMap();
 						//System.out.println(devices[deviceCtr].getSymbolicName());
-						iMap.put("SymbolicName", devices[deviceCtr].getSymbolicName());
-						iMap.put("DPHostName", devices[deviceCtr].getHostname());
+						iMap.put("SymbolicName", 
+								devices[deviceCtr].getSymbolicName());
+						iMap.put("DPHostName", 
+								devices[deviceCtr].getHostname());
 						iMap.put("DomainName", sc.get(domainCtr));
 						deviceListDtl.add(iMap);
 					}
 				}
 			}
 			
-		}catch(Exception e){
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return deviceListDtl;
 		
 	}
 
-	public List<Map> getDomainServices(String dpHostName, String domainName){
+	public List<Map> getDomainServices(String dpHostName, String domainName) {
 		List<Map> deviceListDtl = new ArrayList<Map>();
 		Map iMap = new HashMap();
 
@@ -195,12 +198,13 @@ public class DPUtil {
 			
 			//Manager manager = Manager.getInstance(null);
 			ManagedSet ms = manager.getManagedSet("mgSet");
-			Device devices[] = ms.getDeviceMembers();
+			Device[] devices = ms.getDeviceMembers();
 
-			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr ++) {
-				if(devices[deviceCtr].getHostname().equals(dpHostName)){
-					RuntimeService rs[] = devices[deviceCtr].getManagedDomain(domainName).getServices();
-					for (int serviceCtr = 0; serviceCtr < rs.length; serviceCtr ++) {
+			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr++) {
+				if(devices[deviceCtr].getHostname().equals(dpHostName)) {
+					RuntimeService rs[] = 
+							devices[deviceCtr].getManagedDomain(domainName).getServices();
+					for (int serviceCtr = 0; serviceCtr < rs.length; serviceCtr++) {
 						iMap = new HashMap();
 
 						iMap.put("Domain", rs[serviceCtr].getDomain().getAbsoluteDisplayName());
@@ -215,7 +219,7 @@ public class DPUtil {
 					}
 				}
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -223,7 +227,7 @@ public class DPUtil {
 	}
 
 	// public void getServices(String symbolicName,String hostName,String
-	// userID, String password, int hlmPort){
+	// userID, String password, int hlmPort) {
 	public List<Map> getServices(String dpHostName, String domainName, String svcName) {
 		List<Map> ServiceDtl = new ArrayList<Map>();
 
@@ -244,23 +248,25 @@ public class DPUtil {
 			
 			//Manager manager = Manager.getInstance(null);
 			ManagedSet ms = manager.getManagedSet("mgSet");
-			Device devices[] = ms.getDeviceMembers();
+			Device[] devices = ms.getDeviceMembers();
 			
 			List<String> fileListDtl = new ArrayList<String>();
 			List<String> configListDtl = new ArrayList<String>();
 
-			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr ++) {
-				if(devices[deviceCtr].getHostname().equals(dpHostName)){
-					RuntimeService rs[] = devices[deviceCtr].getManagedDomain(domainName).getServices();
-					for (int serviceCtr = 0; serviceCtr < rs.length; serviceCtr ++) {
-						if(rs[serviceCtr].getName().equalsIgnoreCase(svcName)){
+			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr++) {
+				if(devices[deviceCtr].getHostname().equals(dpHostName)) {
+					RuntimeService[] rs = 
+							devices[deviceCtr].getManagedDomain(domainName).getServices();
+					for (int serviceCtr = 0; serviceCtr < rs.length; serviceCtr++) {
+						if(rs[serviceCtr].getName().equalsIgnoreCase(svcName)) {
 							iMap = new HashMap();
 							ReferencedObjectCollection refObjColl = rs[serviceCtr]
 									.getReferencedObjectsAndFiles();
 							try {
 								StringCollection refFiles = refObjColl
 										.getReferencedFiles();
-								for (int refFileCtr = 0;refFileCtr < refFiles.size();refFileCtr++){
+								for (int refFileCtr = 0; refFileCtr < refFiles.size(); 
+										refFileCtr++) {
 									fileListDtl.add(refFiles.get(refFileCtr)
 											.toString());
 								}
@@ -271,7 +277,8 @@ public class DPUtil {
 							try {
 								com.ibm.datapower.wamt.amp.ConfigObject[] configObj = refObjColl
 										.getReferencedObjects();
-								for (int configObjCtr = 0;configObjCtr < configObj.length;configObjCtr++){
+								for (int configObjCtr = 0; 
+										configObjCtr < configObj.length; configObjCtr++) {
 									configListDtl.add(configObj[configObjCtr]
 											.getName());
 								}
@@ -293,7 +300,7 @@ public class DPUtil {
 	}
 
 	// public void getServices(String symbolicName,String hostName,String
-	// userID, String password, int hlmPort){
+	// userID, String password, int hlmPort) {
 	public List<Map> getDPEnvironment() {
 		List<Map> deviceListDtl = new ArrayList<Map>();
 		List<Map> mpgListDtl = new ArrayList<Map>();
@@ -306,8 +313,9 @@ public class DPUtil {
 			// instance since the manager is a singleton.
 			Manager manager = Manager.getInstance(null);
 			ManagedSet ms = manager.getManagedSet("mgSet");
-			Device devices[] = ms.getDeviceMembers();
-			Map<String, Map<String, String>> deviceDtl = new HashMap<String, Map<String, String>>();
+			Device[] devices = ms.getDeviceMembers();
+			Map<String, Map<String, String>> deviceDtl = 
+					new HashMap<String, Map<String, String>>();
 			Map<String, String> domainDtl = new HashMap<String, String>();
 			List<String> fileListDtl = new ArrayList<String>();
 			List<String> configListDtl = new ArrayList<String>();
@@ -316,7 +324,7 @@ public class DPUtil {
 				StringCollection sc = devices[deviceCtr].getAllDomainNames();
 				int domainCtr = 0;
 				while (domainCtr < sc.size()) {
-					RuntimeService rs[] = devices[deviceCtr].getManagedDomain(
+					RuntimeService[] rs = devices[deviceCtr].getManagedDomain(
 							sc.get(domainCtr)).getServices();
 
 					int serviceCtr = 0;

@@ -71,7 +71,7 @@ public class MQAdminUtil {
 		queue.close();
 		qmgr.disconnect();
 
-		return queueDepth;// queueDepth;
+		return queueDepth;
 	}
 
 	public List<Map> getDepthAll(ArrayList qList, int port, String hostName,
@@ -105,7 +105,7 @@ public class MQAdminUtil {
 			e.printStackTrace();
 		} finally {
 			qmgr.disconnect();
-			return qDepthList;// queueDepth;
+			return qDepthList;
 
 		}
 	}
@@ -543,10 +543,10 @@ public class MQAdminUtil {
 		return "hello";
 	}
 	
-	public List<Map> getQMEnv(String userID) throws XMLStreamException, IOException {
-		List<Map> QMListDtl = new ArrayList<Map>();
+	public List<Map<String, Object>> getQMEnv(String userID) throws XMLStreamException, IOException {
+		List<Map<String, Object>> QMListDtl = new ArrayList<Map<String, Object>>();
 		try{
-			Map iMap = new HashMap();
+			Map<String, Object> iMap = new HashMap<String, Object>();
 			String tagContent = null;
 			File xmlFile = new File(System.getProperty("catalina.base")
 					+ File.separator + "ESBAdmin" + File.separator + userID + File.separator +   
@@ -573,24 +573,24 @@ public class MQAdminUtil {
 						QMListDtl.add(iMap);
 						break;
 					case "QMChannel":
-						iMap.put("QMChannel",tagContent);
+						iMap.put("QMChannel", tagContent);
 						break;
 					case "QMName":
-						iMap.put("QMName",tagContent);
+						iMap.put("QMName", tagContent);
 						break;
 					case "QMHost":
-						iMap.put("QMHost",tagContent);
+						iMap.put("QMHost", tagContent);
 						break;
 					case "QMPort":
-						iMap.put("QMPort",tagContent);
+						iMap.put("QMPort", tagContent);
 						break;
 					case "QMTimeID":
-						iMap.put("QMTimeID",tagContent);
+						iMap.put("QMTimeID", tagContent);
 						break;
 					}
 					break;
 				case XMLStreamConstants.START_DOCUMENT:
-					QMListDtl = new ArrayList<Map>();
+					QMListDtl = new ArrayList<Map<String, Object>>();
 					break;
 				}
 			}

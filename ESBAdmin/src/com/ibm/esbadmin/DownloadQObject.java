@@ -56,7 +56,7 @@ public class DownloadQObject extends HttpServlet {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession(true);
 
-		if(session.getAttribute("UserID")!=null){
+		if(session.getAttribute("UserID") != null){
 			try {
 
 				String UserID = session.getAttribute("UserID").toString();
@@ -67,17 +67,18 @@ public class DownloadQObject extends HttpServlet {
 				OutputStream outStream = response.getOutputStream();
 				byte[] qMgrBytes;
 				String qMgr = request.getParameter("qMgr");
-				String qPort = null;
+				int qPort = 0;
 				String qHost = null;
 				String qChannel = null;
 				MQAdminUtil newMQAdUtil = new MQAdminUtil();
 	
-				List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+				List<Map<String, Object>> MQList = newMQAdUtil.getQMEnv(UserID);
 
-				for (int i=0; i<MQList.size(); i++) {
+				for (int i=0; i< MQList.size(); i++) {
 					if(MQList.get(i).get("QMName").toString().equals(qMgr)){
 						qHost = MQList.get(i).get("QMHost").toString();
-						qPort = MQList.get(i).get("QMPort").toString();
+						qPort = 
+								Integer.parseInt(MQList.get(i).get("QMPort").toString());
 						qChannel = MQList.get(i).get("QMChannel").toString();
 						break;
 					}
@@ -89,35 +90,35 @@ public class DownloadQObject extends HttpServlet {
 
 				if (objType.equals("QUEUE")) {
 					qMgrBytes = String.valueOf(
-							pcfCM.createQScript(qHost, Integer.parseInt(qPort),
+							pcfCM.createQScript(qHost, qPort,
 									objName, qChannel)).getBytes();
 					outStream.write(qMgrBytes);
 				}
 
 				if (objType.equals("CHANNEL")) {
 					qMgrBytes = String.valueOf(
-							pcfCM.createChlScript(qHost, Integer.parseInt(qPort),
+							pcfCM.createChlScript(qHost, qPort,
 									objName, qChannel)).getBytes();
 					outStream.write(qMgrBytes);
 				}
 
 				if (objType.equals("LISTENER")) {
 					qMgrBytes = String.valueOf(
-							pcfCM.createListScript(qHost, Integer.parseInt(qPort),
+							pcfCM.createListScript(qHost, qPort,
 									objName, qChannel)).getBytes();
 					outStream.write(qMgrBytes);
 				}
 
 				if (objType.equals("TOPIC")) {
 					qMgrBytes = String.valueOf(
-							pcfCM.createTopicScript(qHost, Integer.parseInt(qPort),
+							pcfCM.createTopicScript(qHost, qPort,
 									objName, qChannel)).getBytes();
 					outStream.write(qMgrBytes);
 				}
 
 				if (objType.equals("SUB")) {
 					qMgrBytes = String.valueOf(
-							pcfCM.createSubScript(qHost, Integer.parseInt(qPort),
+							pcfCM.createSubScript(qHost, qPort, 
 									objName, qChannel)).getBytes();
 					outStream.write(qMgrBytes);
 				}
@@ -128,7 +129,7 @@ public class DownloadQObject extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}else{
+		} else {
 			System.out.println("Not logged in");
 		}
 		System.gc();

@@ -72,8 +72,8 @@ public class MBCommons {
 				if (applnProxy != null) {
 					boolean isRunning = applnProxy.isRunning();
 					returnStat = "Application:" + appName
-							+ " on Execution Group:" + egName + " on Broker:"
-							+ brkProxy.getName() + " is ";
+							 + " on Execution Group:" + egName + " on Broker:"
+							 + brkProxy.getName() + " is ";
 
 					if (isRunning) {
 						returnStat = returnStat + "running";
@@ -108,7 +108,7 @@ public class MBCommons {
 				if (mfProxy != null) {
 					boolean isRunning = mfProxy.isRunning();
 					returnStat = "Flow " + flowName + " on " + egName + " on "
-							+ brkProxy.getName() + " is ";
+							 + brkProxy.getName() + " is ";
 
 					if (isRunning) {
 						returnStat = "running";
@@ -190,7 +190,7 @@ public class MBCommons {
 		List<Map> MBList = getMBEnv(userID);
 		List<Map> MBListDtl = new ArrayList();
 		
-		for (int i=0; i<MBList.size();i++) {
+		for (int i=0; i< MBList.size(); i++) {
 			if (MBList.get(i).get("MBName").equals(brkName)){
 				MBListDtl.add(MBList.get(i));
 				break;
@@ -275,10 +275,10 @@ public class MBCommons {
 
 			egProxy.stop();
 			brkProxy.disconnect();
-			return "Execution Group "+egName+" Stopped successfully";
+			return "Execution Group " + egName + " Stopped successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error while stopping the Execution Group"+egName;
+			return "Error while stopping the Execution Group" + egName;
 		}
 
 	}
@@ -308,10 +308,10 @@ public class MBCommons {
 			brkProxy = BrokerProxy.getInstance(bcp);
 			brkProxy.deleteExecutionGroup(egName);
 			brkProxy.disconnect();
-			return "Execution Group "+egName+" Deleted successfully";
+			return "Execution Group " + egName + " Deleted successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error while deleting the Execution Group"+egName;
+			return "Error while deleting the Execution Group" + egName;
 		}
 
 	}
@@ -351,10 +351,10 @@ public class MBCommons {
 			ApplicationProxy applnProxy = egProxy.getApplicationByName(applName);
 			applnProxy.start();
 			brkProxy.disconnect();
-			return "Application "+applName+" Started successfully";
+			return "Application " + applName + " Started successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error occured while starting Application "+applName;
+			return "Error occured while starting Application " + applName;
 		}
 	}
 
@@ -391,10 +391,10 @@ public class MBCommons {
 			ApplicationProxy applnProxy = egProxy.getApplicationByName(applName);
 			applnProxy.stop();
 			brkProxy.disconnect();
-			return "Application "+applName+" Stopped successfully";
+			return "Application " + applName + " Stopped successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error occured while stopping Application "+applName;
+			return "Error occured while stopping Application " + applName;
 
 		}
 
@@ -434,10 +434,10 @@ public class MBCommons {
 			MessageFlowProxy mfProxy = egProxy.getMessageFlowByName(mfName);
 			mfProxy.start();
 			brkProxy.disconnect();
-			return "Message Flow "+mfName+" Started successfully";
+			return "Message Flow " + mfName + " Started successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error occured while starting "+mfName;
+			return "Error occured while starting " + mfName;
 		}
 
 	}
@@ -476,10 +476,10 @@ public class MBCommons {
 			MessageFlowProxy mfProxy = egProxy.getMessageFlowByName(mfName);
 			mfProxy.stop();
 			brkProxy.disconnect();
-			return "MessageFlow "+mfName+" Stopped successfully";
+			return "MessageFlow " + mfName + " Stopped successfully";
 		} catch (Exception e) {
 			brkProxy.disconnect();
-			return "Error occured while stopping "+mfName;
+			return "Error occured while stopping " + mfName;
 		}
 
 	}
@@ -615,7 +615,7 @@ public class MBCommons {
 		//File xmlFile = new File("c:\\MBEnv.xml");
 		
 		File xmlFile = new File(System.getProperty("catalina.base")
-				+ File.separator + "ESBAdmin" + File.separator + userID + File.separator +   
+				 + File.separator + "ESBAdmin" + File.separator + userID + File.separator +  
 				"MBEnvironment.xml");
 
 		InputStream in = new FileInputStream(xmlFile);
@@ -639,19 +639,19 @@ public class MBCommons {
 					MBListDtl.add(iMap);
 					break;
 				case "MBEnv":
-					iMap.put("MBEnv",tagContent);
+					iMap.put("MBEnv", tagContent);
 					break;
 				case "MBName":
-					iMap.put("MBName",tagContent);
+					iMap.put("MBName", tagContent);
 					break;
 				case "MBHost":
-					iMap.put("MBHost",tagContent);
+					iMap.put("MBHost", tagContent);
 					break;
 				case "MBPort":
-					iMap.put("MBPort",tagContent);
+					iMap.put("MBPort", tagContent);
 					break;
 				case "MBTimeID":
-					iMap.put("MBTimeID",tagContent);
+					iMap.put("MBTimeID", tagContent);
 					break;
 					
 				}

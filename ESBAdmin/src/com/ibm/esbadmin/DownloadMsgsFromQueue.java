@@ -51,10 +51,9 @@ public class DownloadMsgsFromQueue extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		// ServletContext ctx = getServletContext();
+	protected void doGet(final HttpServletRequest request,
+			final HttpServletResponse response) 
+					throws ServletException, IOException {
 		java.util.Date date = new java.util.Date();
 		Timestamp currentTimestamp = new Timestamp(date.getTime());
 
