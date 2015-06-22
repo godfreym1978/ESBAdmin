@@ -183,6 +183,9 @@ try {
 
 <%
            }
+%>
+</table>
+<%
 	
 } catch (Exception e) {
 	System.err.println("Cannot connect to database server");

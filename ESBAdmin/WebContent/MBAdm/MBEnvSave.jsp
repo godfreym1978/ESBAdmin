@@ -87,7 +87,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				mbMap.put("MBPort", request.getParameter("brkPort"));
 				mbMap.put("MBEnv", request.getParameter("brkEnv"));
 				
-				List<Map> newList = new ArrayList();
+				List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
 				newList.add(mbMap);
 				newUtil.writeXML(userFile.getAbsolutePath(), "MBEnvironment", newList); 	
 				%>
@@ -107,7 +107,8 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				}
 		}else{
 			
-			List<Map> MBList = newMBCmn.getMBEnv(UserID);
+			List<Map<String, String>> MBList = newMBCmn.getMBEnv(UserID);
+			//List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
 			
 			boolean isSetupFlag = false;
 			

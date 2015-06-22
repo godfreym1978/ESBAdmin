@@ -46,7 +46,7 @@ if(session.getAttribute("UserID")==null){%>
 		String qChannel = null;
 
 		MQAdminUtil newMQAdUtil = new MQAdminUtil();
-		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+		List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 
 		for (int i=0; i<MQList.size(); i++) {
 			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
@@ -61,7 +61,7 @@ if(session.getAttribute("UserID")==null){%>
 		
 		PCFCommons newPFCCM = new PCFCommons();
 			
-		List<Map> alQueueList = newPFCCM.ListQueueNamesDtl(
+		List<Map<String, Object>> alQueueList = newPFCCM.ListQueueNamesDtl(
 		 			qHost, Integer.parseInt(qPort), qChannel);
 %>
 

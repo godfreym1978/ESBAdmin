@@ -104,21 +104,27 @@ public class DPUtil {
 			
 				iMap = new HashMap();
 				
-				iMap.put("ActualFirmware", devices[deviceCtr].getActualFirmwareLevel());
-				iMap.put("CurrentAMPVersion", devices[deviceCtr].getCurrentAMPVersion());
+				iMap.put("ActualFirmware", 
+						devices[deviceCtr].getActualFirmwareLevel());
+				iMap.put("CurrentAMPVersion", 
+						devices[deviceCtr].getCurrentAMPVersion());
 				iMap.put("GUIPort", devices[deviceCtr].getGUIPort());
 				iMap.put("HLMPort", devices[deviceCtr].getHLMPort());
 				iMap.put("HostName", devices[deviceCtr].getHostname());
-				iMap.put("QuiesceTimeout", devices[deviceCtr].getQuiesceTimeout());
+				iMap.put("QuiesceTimeout", 
+						devices[deviceCtr].getQuiesceTimeout());
 				iMap.put("SerialNumber", devices[deviceCtr].getSerialNumber());
 				iMap.put("SymbolicName", devices[deviceCtr].getSymbolicName());
 				iMap.put("GetUserID", devices[deviceCtr].getUserId());
-				iMap.put("IsDeviceReachable", devices[deviceCtr].isDeviceReachable());
+				iMap.put("IsDeviceReachable", 
+						devices[deviceCtr].isDeviceReachable());
 				iMap.put("IsPrimary", devices[deviceCtr].isPrimary());
-				iMap.put("IsSourceBackupSupported", devices[deviceCtr].isSecureBackupSupported());
+				iMap.put("IsSourceBackupSupported", 
+						devices[deviceCtr].isSecureBackupSupported());
 				iMap.put("DeviceType", devices[deviceCtr].getDeviceType());
 				iMap.put("ModelType", devices[deviceCtr].getModelType());
-				iMap.put("SourceFirmware", devices[deviceCtr].getSourceFirmwareVersion());
+				iMap.put("SourceFirmware", 
+						devices[deviceCtr].getSourceFirmwareVersion());
 				
 				deviceListDtl.add(iMap);
 				
@@ -154,13 +160,14 @@ public class DPUtil {
 			Device[] devices = ms.getDeviceMembers();
 						
 			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr++) {
-				if (devices[deviceCtr].getHostname().equalsIgnoreCase(dpHostName)) {
-					StringCollection sc = devices[deviceCtr].getAllDomainNames();
+				if (devices[deviceCtr].
+						getHostname().equalsIgnoreCase(dpHostName)) {
+					StringCollection sc = 
+							devices[deviceCtr].getAllDomainNames();
 					//int domainCtr = 0;
 					for (int domainCtr = 0; 
 							domainCtr < sc.size(); domainCtr++) {
 						iMap = new HashMap();
-						//System.out.println(devices[deviceCtr].getSymbolicName());
 						iMap.put("SymbolicName", 
 								devices[deviceCtr].getSymbolicName());
 						iMap.put("DPHostName", 
@@ -171,7 +178,7 @@ public class DPUtil {
 				}
 			}
 			
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return deviceListDtl;
@@ -201,20 +208,25 @@ public class DPUtil {
 			Device[] devices = ms.getDeviceMembers();
 
 			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr++) {
-				if(devices[deviceCtr].getHostname().equals(dpHostName)) {
+				if (devices[deviceCtr].getHostname().equals(dpHostName)) {
 					RuntimeService rs[] = 
 							devices[deviceCtr].getManagedDomain(domainName).getServices();
 					for (int serviceCtr = 0; serviceCtr < rs.length; serviceCtr++) {
 						iMap = new HashMap();
 
-						iMap.put("Domain", rs[serviceCtr].getDomain().getAbsoluteDisplayName());
-						iMap.put("ClassDisplayName", rs[serviceCtr].getClassDisplayName());
+						iMap.put("Domain", 
+								rs[serviceCtr].getDomain().getAbsoluteDisplayName());
+						iMap.put("ClassDisplayName", 
+								rs[serviceCtr].getClassDisplayName());
 						iMap.put("DomainName", rs[serviceCtr].getName());
-						iMap.put("DomainUserComments", rs[serviceCtr].getUserComment());
+						iMap.put("DomainUserComments", 
+								rs[serviceCtr].getUserComment());
 						iMap.put("OpStatus", rs[serviceCtr].getOpStatus());
 						iMap.put("PrimaryKey", rs[serviceCtr].getPrimaryKey());
-						iMap.put("QuiesceStatus", rs[serviceCtr].getQuiesceStatus());
-						iMap.put("AdminStatus", rs[serviceCtr].getAdminStatus());
+						iMap.put("QuiesceStatus", 
+								rs[serviceCtr].getQuiesceStatus());
+						iMap.put("AdminStatus", 
+								rs[serviceCtr].getAdminStatus());
 						deviceListDtl.add(iMap);
 					}
 				}
@@ -254,11 +266,11 @@ public class DPUtil {
 			List<String> configListDtl = new ArrayList<String>();
 
 			for (int deviceCtr = 0; deviceCtr < devices.length; deviceCtr++) {
-				if(devices[deviceCtr].getHostname().equals(dpHostName)) {
+				if (devices[deviceCtr].getHostname().equals(dpHostName)) {
 					RuntimeService[] rs = 
 							devices[deviceCtr].getManagedDomain(domainName).getServices();
 					for (int serviceCtr = 0; serviceCtr < rs.length; serviceCtr++) {
-						if(rs[serviceCtr].getName().equalsIgnoreCase(svcName)) {
+						if (rs[serviceCtr].getName().equalsIgnoreCase(svcName)) {
 							iMap = new HashMap();
 							ReferencedObjectCollection refObjColl = rs[serviceCtr]
 									.getReferencedObjectsAndFiles();

@@ -543,10 +543,10 @@ public class MQAdminUtil {
 		return "hello";
 	}
 	
-	public List<Map<String, Object>> getQMEnv(String userID) throws XMLStreamException, IOException {
-		List<Map<String, Object>> QMListDtl = new ArrayList<Map<String, Object>>();
+	public List<Map<String, String>> getQMEnv(String userID) throws XMLStreamException, IOException {
+		List<Map<String, String>> QMListDtl = new ArrayList<Map<String, String>>();
 		try{
-			Map<String, Object> iMap = new HashMap<String, Object>();
+			Map<String, String> iMap = new HashMap<String, String>();
 			String tagContent = null;
 			File xmlFile = new File(System.getProperty("catalina.base")
 					+ File.separator + "ESBAdmin" + File.separator + userID + File.separator +   
@@ -590,14 +590,14 @@ public class MQAdminUtil {
 					}
 					break;
 				case XMLStreamConstants.START_DOCUMENT:
-					QMListDtl = new ArrayList<Map<String, Object>>();
+					QMListDtl = new ArrayList<Map<String, String>>();
 					break;
 				}
 			}
 			in.close();
-		}catch(XMLStreamException e){
+		} catch (XMLStreamException e) {
 			e.printStackTrace();
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		

@@ -52,7 +52,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		String qChannel = null;
 
 		MQAdminUtil newMQAdUtil = new MQAdminUtil();
-		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+		List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 
 		for (int i=0; i<MQList.size(); i++) {
 			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
@@ -67,8 +67,8 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					
 		PCFCommons pcfCmd = new PCFCommons();
 					
-		List<Map> ListSubNames = pcfCmd.ListSubNames(qHost, Integer.parseInt(qPort),qChannel);
-		List<Map> ListTopicNames = pcfCmd.ListTopicNames(qHost, Integer.parseInt(qPort),qChannel);
+		List<Map<String, Object>> ListSubNames = pcfCmd.ListSubNames(qHost, Integer.parseInt(qPort),qChannel);
+		List<Map<String, Object>> ListTopicNames = pcfCmd.ListTopicNames(qHost, Integer.parseInt(qPort),qChannel);
 		List<Map> ListOrpTopicNames = new ArrayList<Map>();
 					
 		boolean flag = true;

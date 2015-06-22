@@ -58,7 +58,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	MBCommons newMBCmn = new MBCommons();
 
 	String UserID = session.getAttribute("UserID").toString();
-	List<Map> MBList = newMBCmn.getMBEnv(UserID);
+	List<Map<String, String>> MBList = newMBCmn.getMBEnv(UserID);
 
 	String hostName = new String();
 	int portNum=0;

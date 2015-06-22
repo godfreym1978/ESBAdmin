@@ -76,7 +76,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				</tr>
 			<%
 			MBCommons newMBCommons = new MBCommons(); 
-			List<Map> MBList = newMBCommons.getMBEnv(UserID);
+			List<Map<String, String>> MBList = newMBCommons.getMBEnv(UserID);
 			
 			for (int i=0; i<MBList.size(); i++) {
 

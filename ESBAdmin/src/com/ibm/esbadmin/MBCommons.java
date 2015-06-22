@@ -183,12 +183,13 @@ public class MBCommons {
 		return dr.toString();
 	}
 
-	public List<Map> getBrkParameters(String brkName, String userID)
+	public List<Map<String, String>> getBrkParameters(String brkName, String userID)
 			throws ConfigManagerProxyLoggedException, NumberFormatException,
 			IOException, XMLStreamException {
 
-		List<Map> MBList = getMBEnv(userID);
-		List<Map> MBListDtl = new ArrayList();
+		List<Map<String, String>>  MBList = getMBEnv(userID);
+		List<Map<String, String>>  MBListDtl = new ArrayList();
+		//List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
 		
 		for (int i=0; i< MBList.size(); i++) {
 			if (MBList.get(i).get("MBName").equals(brkName)){
@@ -211,7 +212,7 @@ public class MBCommons {
 	public String StartEG(String brkName, String egName, String userID) {
 		BrokerProxy brkProxy = null;
 		try {
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 			/*
@@ -262,7 +263,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
@@ -297,7 +298,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 							
@@ -337,7 +338,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
@@ -378,7 +379,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
@@ -422,7 +423,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
@@ -464,7 +465,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
@@ -500,7 +501,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
@@ -544,7 +545,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
@@ -587,7 +588,7 @@ public class MBCommons {
 				portNum = Integer.parseInt(csvRecord.get(3));
 				}							
 			*/
-			List<Map> MBListDtl = getBrkParameters(brkName, userID);
+			List<Map<String, String>> MBListDtl = getBrkParameters(brkName, userID);
 			int portNum = Integer.parseInt((String) MBListDtl.get(0).get("MBPort"));
 			String hostName = (String)MBListDtl.get(0).get("MBHost");
 
@@ -608,8 +609,8 @@ public class MBCommons {
 
 	}
 
-	public List<Map> getMBEnv(String userID) throws XMLStreamException, IOException {
-		List<Map> MBListDtl = new ArrayList<Map>();
+	public List<Map<String, String>> getMBEnv(String userID) throws XMLStreamException, IOException {
+		List<Map<String, String>> MBListDtl = new ArrayList<Map<String, String>>();
 		Map iMap = new HashMap();
 		String tagContent = null;
 		//File xmlFile = new File("c:\\MBEnv.xml");
@@ -657,7 +658,7 @@ public class MBCommons {
 				}
 				break;
 			case XMLStreamConstants.START_DOCUMENT:
-				MBListDtl = new ArrayList<Map>();
+				MBListDtl = new ArrayList<Map<String, String>>();
 				break;
 			}
 		}

@@ -65,7 +65,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				</tr>
 	<%	
 		DPUtil newDPUtil = new DPUtil();
-		List<Map> deviceListDtl = newDPUtil.getDeviceDtl();
+		List<Map<String, Object>> deviceListDtl = newDPUtil.getDeviceDtl();
 
 		int i = 0;
 		int fileCtr = 0;

@@ -696,7 +696,7 @@ public class Util {
 
 	}
 
-	public void writeXML(String fileName, String rootElement, List<Map> newList) {
+	public void writeXML(String fileName, String rootElement, List<Map<String, String>> newList) {
 		XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
 		try {
 			XMLStreamWriter xmlStreamWriter = xmlOutputFactory

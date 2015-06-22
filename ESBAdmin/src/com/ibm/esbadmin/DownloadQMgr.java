@@ -64,7 +64,7 @@ public class DownloadQMgr extends HttpServlet {
 			String qChannel = null;
 
 			MQAdminUtil newMQAdUtil = new MQAdminUtil();
-			List<Map<String, Object>> MQList = new ArrayList();
+			List<Map<String, String>> MQList = new ArrayList<Map<String, String>>();
 
 			try {
 				MQList = newMQAdUtil.getQMEnv(UserID);

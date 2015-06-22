@@ -48,7 +48,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		Util newUtil = new Util();
 		MBCommons newMBCmn = new MBCommons();
 
-		List<Map> MBList = newMBCmn.getMBEnv(UserID);
+		List<Map<String, String>> MBList = newMBCmn.getMBEnv(UserID);
 
 		//File userFile = new File(System.getProperty("catalina.base")+File.separator+"ESBAdmin"+File.separator+session.getAttribute("UserID").toString()+File.separator+"MBEnv.txt");
 		String hostName = new String();

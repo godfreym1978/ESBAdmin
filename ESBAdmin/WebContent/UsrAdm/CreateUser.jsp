@@ -58,7 +58,7 @@ if (session.getAttribute("UserID") != null&&session.getAttribute("UserID").toStr
 			String qChannel = null;
 
 			MQAdminUtil newMQAdUtil = new MQAdminUtil();
-			List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+			List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 
 			for (int i=0; i<MQList.size(); i++) {
 					qMgr = MQList.get(i).get("QMName").toString();
@@ -80,7 +80,7 @@ if (session.getAttribute("UserID") != null&&session.getAttribute("UserID").toStr
 			String hostName = null;
 			int portNum;
 			MBCommons newMBCmn = new MBCommons();
-			List<Map> MBList = newMBCmn.getMBEnv(UserID);
+			List<Map<String, String>> MBList = newMBCmn.getMBEnv(UserID);
 			for(int i=0; i<MBList.size();i++){
 
 				env = MBList.get(i).get("MBEnv").toString();

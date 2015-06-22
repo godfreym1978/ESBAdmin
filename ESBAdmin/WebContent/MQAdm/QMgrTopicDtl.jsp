@@ -49,7 +49,7 @@ if(session.getAttribute("UserID")==null){%>
 		Util newUtil = new Util();
 		PCFCommons newPCFCmn = new PCFCommons();
 
-		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+		List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 	
 		for (int i=0; i<MQList.size(); i++) {
 			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
@@ -62,7 +62,7 @@ if(session.getAttribute("UserID")==null){%>
 
 		String topicStr = request.getParameter("topicStr");
 			
-		List<Map> topicDtls = newPCFCmn.ListTopicStatus(qHost, Integer.parseInt(qPort), topicStr, qChannel);
+		List<Map<String, Object>> topicDtls = newPCFCmn.ListTopicStatus(qHost, Integer.parseInt(qPort), topicStr, qChannel);
 		%>
 		<center><b><u>List of Topics in Queue Manager - <%=qMgr %></u></b></center><br>
 		<table border=1 align=center class="gridtable">

@@ -88,11 +88,11 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		MQAdminUtil newMQAdUtil = new MQAdminUtil();
 		MBCommons newMBCmn = new MBCommons();
 		String UserID = session.getAttribute("UserID").toString();
-		List<Map> MBList = newMBCmn.getMBEnv(UserID);
-		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+		List<Map<String, String>> MBList = newMBCmn.getMBEnv(UserID);
+		List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 		
 		Map<String,String> qmMap = new HashMap<String, String>();
-		List<Map> mqList = new ArrayList();
+		List<Map<String, String>> mqList = new ArrayList();
 		
 		for (newQMCtr=0;newQMCtr<qMgr.length;newQMCtr++){
 			
@@ -118,7 +118,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		String mbQMgrPort = new String();
 
 		Map<String,String> mbMap = new HashMap<String, String>();
-		List<Map> mbList = new ArrayList();
+		List<Map<String, String>> mbList = new ArrayList();
 
 		for (newMBCtr=0;newMBCtr<broker.length;newMBCtr++){
 			//FileUtils.writeStringToFile(userBrkFile, broker[newMBCtr].toString().trim()+"\n", true);

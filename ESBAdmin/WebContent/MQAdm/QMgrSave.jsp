@@ -94,7 +94,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				qmMap.put("QMPort", request.getParameter("qmgrPort"));
 				qmMap.put("QMChannel", request.getParameter("qmgrChl"));
 				
-				List<Map> newList = new ArrayList();
+				List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
 				newList.add(qmMap);
 				newUtil.writeXML(userFile.getAbsolutePath(), "MQEnvironment", newList); 	
 				
@@ -116,7 +116,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 				}
 		}else{
 			
-			List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+			List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 			
 			boolean isSetupFlag = false;
 			
@@ -149,7 +149,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 					Timestamp newTimeStmp = new Timestamp(date.getTime());
 					String newTimeID = newTimeStmp.toString().replaceAll("-", "").replaceAll(":", "").replaceAll(" ", "");
 
-					Map<String,String> qmMap = new HashMap<String, String>();
+					Map<String, String> qmMap = new HashMap<String, String>();
 					qmMap.put("QMTimeID", newTimeID);
 					qmMap.put("QMName", request.getParameter("qmgrName"));
 					qmMap.put("QMHost", request.getParameter("qmgrHost"));

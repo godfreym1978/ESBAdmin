@@ -53,7 +53,7 @@ if(session.getAttribute("UserID")==null){
 
 	Util newUtil = new Util();
 	MBCommons newMBCmn = new MBCommons();
-	List<Map> MBList = newMBCmn.getMBEnv(UserID);
+	List<Map<String, String>> MBList = newMBCmn.getMBEnv(UserID);
 				
 	String hostName = new String();
 	String env = null;

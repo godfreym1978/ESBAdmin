@@ -45,7 +45,7 @@ if(session.getAttribute("UserID")==null){%>
 		String qChannel = null;
 
 		MQAdminUtil newMQAdUtil = new MQAdminUtil();
-		List<Map> MQList = newMQAdUtil.getQMEnv(UserID);
+		List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 
 		for (int i=0; i<MQList.size(); i++) {
 			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
@@ -67,7 +67,7 @@ if(session.getAttribute("UserID")==null){%>
 			for (String line : FileUtils.readLines(userFile)) {
 				qList.add(line);
 			}
-			List<Map> qDepthList = new ArrayList<Map>();
+			List<Map<String, Object>> qDepthList = new ArrayList<Map<String, Object>>();
 			qDepthList = newUtil.getDepthAll(qList, Integer.parseInt(qPort), qHost, qMgr, qChannel);
 			%>
 			<center>This Page gets the list of queues for the mentioned

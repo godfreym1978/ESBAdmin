@@ -31,7 +31,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 </head>
 
 <body>
-<center>
+
 
 <%if(session.getAttribute("UserID")==null){
 %>
