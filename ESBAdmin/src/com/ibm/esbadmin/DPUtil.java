@@ -136,10 +136,10 @@ public class DPUtil {
 		return deviceListDtl;
 	}
 	
-	public List<Map<String, Object>> getDomains(final String dpHostName) {
-		List<Map<String, Object>> deviceListDtl = 
-				new ArrayList<Map<String, Object>>();
-		Map<String, Object> iMap = new HashMap<String, Object>();
+	public List<Map<String, String>> getDomains(final String dpHostName) {
+		List<Map<String, String>> deviceListDtl = 
+				new ArrayList<Map<String, String>>();
+		Map<String, String> iMap = new HashMap<String, String>();
 
 		try {
 			// Get an instance of the manager. All subsequent calls to
@@ -185,8 +185,8 @@ public class DPUtil {
 		
 	}
 
-	public List<Map> getDomainServices(String dpHostName, String domainName) {
-		List<Map> deviceListDtl = new ArrayList<Map>();
+	public List<Map<String, Object>> getDomainServices(String dpHostName, String domainName) {
+		List<Map<String, Object>> deviceListDtl = new ArrayList<Map<String, Object>>();
 		Map iMap = new HashMap();
 
 		try {
@@ -240,8 +240,8 @@ public class DPUtil {
 
 	// public void getServices(String symbolicName,String hostName,String
 	// userID, String password, int hlmPort) {
-	public List<Map> getServices(String dpHostName, String domainName, String svcName) {
-		List<Map> ServiceDtl = new ArrayList<Map>();
+	public List<Map<String, Object>> getServices(String dpHostName, String domainName, String svcName) {
+		List<Map<String, Object>> ServiceDtl = new ArrayList<Map<String, Object>>();
 
 		Map iMap = new HashMap();
 		try {
@@ -314,9 +314,12 @@ public class DPUtil {
 	// public void getServices(String symbolicName,String hostName,String
 	// userID, String password, int hlmPort) {
 	public List<Map> getDPEnvironment() {
-		List<Map> deviceListDtl = new ArrayList<Map>();
-		List<Map> mpgListDtl = new ArrayList<Map>();
-		List<Map> wspListDtl = new ArrayList<Map>();
+		List<Map> deviceListDtl = 
+				new ArrayList();
+		List<Map> mpgListDtl = 
+				new ArrayList();
+		List<Map> wspListDtl = 
+				new ArrayList();
 
 		Map iMap = new HashMap();
 		try {

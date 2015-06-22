@@ -55,7 +55,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	<%	
 		String dpHostName = request.getParameter("dpHostName");
 		DPUtil newDPUtil = new DPUtil();
-		List<Map<String, Object>> deviceListDtl = newDPUtil.getDomains(dpHostName);
+		List<Map<String, String>> deviceListDtl = newDPUtil.getDomains(dpHostName);
 
 		int i = 0;
 		int fileCtr = 0;

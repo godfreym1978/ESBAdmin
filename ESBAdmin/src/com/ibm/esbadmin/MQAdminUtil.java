@@ -74,7 +74,7 @@ public class MQAdminUtil {
 		return queueDepth;
 	}
 
-	public List<Map> getDepthAll(ArrayList qList, int port, String hostName,
+	public List<Map<String, String>> getDepthAll(ArrayList qList, int port, String hostName,
 			String queueMgr, String qChannel) throws MQException {
 		// Build quemanager (this should be done in another method)
 		// and not every time in a real life application
@@ -83,7 +83,7 @@ public class MQAdminUtil {
 		MQEnvironment.port = port;
 		MQEnvironment.hostname = hostName;
 		MQQueueManager qmgr = new MQQueueManager(queueMgr);
-		List<Map> qDepthList = new ArrayList<Map>();
+		List<Map<String, String>> qDepthList = new ArrayList<Map<String, String>>();
 		Map iMap = new HashMap();
 
 		try {

@@ -62,7 +62,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		<%	
 		String dmnName;
 		DPUtil newDPUtil = new DPUtil();
-		List<Map> domainSvcsListDtl = newDPUtil.getServices(dpHostName, domainName, svcName);
+		List<Map<String, Object>> domainSvcsListDtl = newDPUtil.getServices(dpHostName, domainName, svcName);
 		List<String> fileListDtl = new ArrayList<String>();
 		List<String> configListDtl = new ArrayList<String>();
 		int SrNo = 0;
