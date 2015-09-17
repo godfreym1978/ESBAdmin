@@ -20,60 +20,53 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="com.ibm.mq.constants.MQConstants" %>
 
 <html>
-<script type="text/javascript">
-  function unhide(divID) {
-    var item = document.getElementById(divID);
-    if (item) {
-      item.className=(item.className=='hidden')?'unhidden':'hidden';
-    }
-  }
-</script>
-<head>
-<meta http-equiv="Content-Style-Type" content="text/css">
-<style type="text/css">
-<%@ include file="../Style.css" %>
-</style>
-<title>Get Topic List</title>
-</head>
-<body>
-<title>Channel Status</title>
-</head>
-<body>
-<%
-if(session.getAttribute("UserID")==null){%>
-<center>
-	Looks like you are not logged in.<br> Please login with a valid
-	user id <a href='../Index.html'><b>Here</b> </a>
-</center>
-<%	
-}else{
-	String UserID = session.getAttribute("UserID").toString();
-	try{
-		String qMgr = request.getParameter("qMgr");
-		String qPort = null;
-		String qHost = null;
-		String qChannel = null;
+	<script type="text/javascript">
+	  function unhide(divID) {
+	    var item = document.getElementById(divID);
+	    if (item) {
+	      item.className=(item.className=='hidden')?'unhidden':'hidden';
+	    }
+	  }
+	</script>
+	<head>
+		<meta http-equiv="Content-Style-Type" content="text/css">
+		<style type="text/css">
+			<%@ include file="../Style.css" %>
+		</style>
+	<title>Channel Status</title>
+	</head>
+	<body>
+		<% if(session.getAttribute("UserID")==null) {%>
+			Looks like you are not logged in.<br> Please login with a valid
+			user id <a href='../Index.html'><b>Here</b> </a>
+		<%}else{
+			
+			String UserID = session.getAttribute("UserID").toString();
+			try{
+				String qMgr = request.getParameter("qMgr");
+				String qPort = null;
+				String qHost = null;
+				String qChannel = null;
 
-		MQAdminUtil newMQAdUtil = new MQAdminUtil();
-		List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
+				MQAdminUtil newMQAdUtil = new MQAdminUtil();
+				List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 
-		for (int i=0; i<MQList.size(); i++) {
-			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
-				qHost = MQList.get(i).get("QMHost").toString();
-				qPort = MQList.get(i).get("QMPort").toString();
-				qChannel = MQList.get(i).get("QMChannel").toString();
-				break;
-			}
-		}
+				for (int i=0; i<MQList.size(); i++) {
+					if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+						qHost = MQList.get(i).get("QMHost").toString();
+						qPort = MQList.get(i).get("QMPort").toString();
+						qChannel = MQList.get(i).get("QMChannel").toString();
+						break;
+					}
+				}
 
-		String chlName = request.getParameter("chlName").toString();
-		Util newUtil = new Util();
-
-		PCFCommons newPFCCM = new PCFCommons();
-	
-		List<Map<String, Object>> chanelStat  = newPFCCM.channelStatus(qHost, Integer.parseInt(qPort),chlName );
- %>
-
+				String chlName = request.getParameter("chlName").toString();
+				Util newUtil = new Util();
+		
+				PCFCommons newPFCCM = new PCFCommons();
+			
+				List<Map<String, Object>> chanelStat  = newPFCCM.channelStatus(qHost, Integer.parseInt(qPort),chlName );
+		%>
 		<table border=1 align=center class="gridtable">
 			<tr>
 				<th><b>Channel Name</b></th>
@@ -128,10 +121,7 @@ if(session.getAttribute("UserID")==null){%>
 				<th><b>Transmit Queue Name</b></th>
 				<th><b>Transmit Queue Indicator</b></th>
 			</tr>        
-
-		<%
-		for (int index=0;index < chanelStat.size();index++){
-		%>
+			<%for (int index=0;index < chanelStat.size();index++){%>
 			<tr>
 				<td><%=chanelStat.get(index).get("MQIACH_BATCH_SIZE_INDICATOR")%></td>
 				<td><%=chanelStat.get(index).get("MQIACH_BUFFERS_RCVD")%></td>
@@ -185,25 +175,18 @@ if(session.getAttribute("UserID")==null){%>
 				<td><%=chanelStat.get(index).get("MQCACH_XMIT_Q_NAME")%></td>
 				<td><%=chanelStat.get(index).get("MQIACH_XMITQ_TIME_INDICATOR")%></td>
 			</tr>
-		<%
-		}
-		%>
-		</table>
-		<%
-	}catch(Exception e){
+		<%}%>
+	</table>
+	<%}catch(Exception e){
 		e.printStackTrace();
-		%>
-		<center> <b>Experienced the following error  - </b></center><br>
-		<%
-		for (StackTraceElement element : e.getStackTrace()) {
-			%>
-		    <%=element.toString()%><br>
-		    <%
+	%>
+		<b>Encountered the following error  - </b><br>
+		<%for (StackTraceElement element : e.getStackTrace()) {%>
+			<%=element.toString()%><br>
+			<%
 		}
 	}
 }
-
-System.gc();
 	 %>
-</body>
+	</body>
 </html>

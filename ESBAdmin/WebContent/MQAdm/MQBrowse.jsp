@@ -20,43 +20,35 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page import="java.util.*" %>
 <%@ page import="java.sql.*" %>
 <html>
-<head>
-<meta http-equiv="Content-Style-Type" content="text/css">
-<style type="text/css">
-<%@ include file="../Style.css" %>
-</style>
-<title>Browse Messages</title>
-
-</head>
-<body>
-	<%
-		if (session.getAttribute("UserID") == null) {
-	%>
-	<b>Are you logged in to system? If not do so in <a
-		href='../Index.html'>here </a></b>
-	<%
-		} else {
+	<head>
+		<meta http-equiv="Content-Style-Type" content="text/css">
+		<style type="text/css">
+		<%@ include file="../Style.css" %>
+		</style>
+		<title>Browse Messages</title>
+	</head>
+	<body>
+		<%if (session.getAttribute("UserID") == null) {%>
+			<b>Are you logged in to system? 
+			If not do so in <a href='../Index.html'>here </a></b>
+		<%} else {
 			String qName = request.getParameter("QName").toString();
 			String qMgr = request.getParameter("QMgr").toString();
-	%>
-	<center>
-		You have selected to browse the Queue - <b><%=qName%></b> / Queue
-		Manager - <b><%=qMgr%></b>
+		%>
+		You have selected to browse the Queue - <b><%=qName%></b> 
+		/ Queue Manager - <b><%=qMgr%></b>
 		<%
-				int inCrement = 0;
-				int iCount = 0;
-				int inMsgCtr = 0;
+			int inCrement = 0;
+			int iCount = 0;
+			int inMsgCtr = 0;
 
-				MQAdminUtil newMQAdUtil = new MQAdminUtil();
-				ArrayList<String> alQueueList = null;
-				System.out.println(Calendar.getInstance().getTime());
-				alQueueList = newMQAdUtil.browseQueue(qMgr, qName);
-				System.out.println(Calendar.getInstance().getTime());
-				iCount = alQueueList.size();
-				if (iCount != 0) {
+			MQAdminUtil newMQAdUtil = new MQAdminUtil();
+			ArrayList<String> alQueueList = null;
+			alQueueList = newMQAdUtil.browseQueue(qMgr, qName);
+			iCount = alQueueList.size();
+			if (iCount != 0) {
 		%>
 		<table border=1 align=center width=100% class="gridtable">
-
 			<tr>
 				<th style="width: 4%;">Message No</th>
 				<th style="width: 56%;">Message Data</th>
@@ -64,18 +56,20 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 			</tr>
 			<%
 				String msgId = new String();
-						while (inCrement < iCount) {
-							msgId = alQueueList.get(inCrement + 1);
+				while (inCrement < iCount) {
+					msgId = alQueueList.get(inCrement + 1);
 			%>
 			<tr>
 				<td><a
-					href='../DownloadMsgFromQueue?qMgr=<%=qMgr%>&qName=<%=qName%>&message=<%=alQueueList.get(inCrement + 1)%>'><%=inMsgCtr + 1%></a></td>
-				<td><xmp><%=alQueueList.get(inCrement)%></xmp></td>
+					href='../DownloadMsgFromQueue?qMgr=<%=qMgr%>
+							&qName=<%=qName%>&message=<%=alQueueList.get(inCrement + 1)%>'>
+								<%=inMsgCtr + 1%></a></td>
+				<td><%=alQueueList.get(inCrement)%></td>
 				<td><%=alQueueList.get(inCrement + 2)%></td>
 				<%
 					inCrement = inCrement + 3;
 								inMsgCtr++;
-							}
+				}
 				%>
 			</tr>			
 		</table>
@@ -86,8 +80,7 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 		<br> <u>There are no messages on this queue</u>
 		<%
 			}
-			}
-		System.gc();
+		}
 		%>
 </body>
 </html>

@@ -22,34 +22,31 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
 
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<style type="text/css">
-<%@ include file="../Style.css" %>
-</style>
-<title>Topic Details</title>
-</head>
-<body>
-<%
-if(session.getAttribute("UserID")==null){%>
-<center>
-	Looks like you are not logged in.<br> Please login with a valid
-	user id <a href='../Index.html'><b>Here</b> </a>
-</center>
-<%	
-}else{
-	String UserID = session.getAttribute("UserID").toString();
-	try{
-		String qMgr = request.getParameter("qMgr");
-		String qPort = null;
-		String qHost = null;
-		String qChannel = null;
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<style type="text/css">
+			<%@ include file="../Style.css" %>
+		</style>
+		<title>Topic Details</title>
+	</head>
+	<body>
+		<%if(session.getAttribute("UserID")==null){%>
+			Looks like you are not logged in.<br> Please login with a valid
+			user id <a href='../Index.html'><b>Here</b> </a>
+		<%	
+		}else{
+			String UserID = session.getAttribute("UserID").toString();
+			try{
+				String qMgr = request.getParameter("qMgr");
+				String qPort = null;
+				String qHost = null;
+				String qChannel = null;
 	
-		MQAdminUtil newMQAdUtil = new MQAdminUtil();
-		Util newUtil = new Util();
-		PCFCommons newPCFCmn = new PCFCommons();
-
-		List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
+				MQAdminUtil newMQAdUtil = new MQAdminUtil();
+				Util newUtil = new Util();
+				PCFCommons newPCFCmn = new PCFCommons();
+		
+				List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
 	
 		for (int i=0; i<MQList.size(); i++) {
 			if(MQList.get(i).get("QMName").toString().equals(qMgr)){

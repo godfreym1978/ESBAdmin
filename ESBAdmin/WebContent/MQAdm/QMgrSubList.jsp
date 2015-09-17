@@ -21,50 +21,48 @@ without the express written permission of Godfrey P Menezes(godfreym@gmail.com).
 <%@ page
 	import="org.apache.commons.fileupload.*,org.apache.commons.io.*,java.io.*"%>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<style type="text/css">
-<%@ include file="../Style.css" %>
-</style>
-<title>Subscription List</title>
-</head>
-<body>
-<%
-if(session.getAttribute("UserID")==null){%>
-<center>
-	Looks like you are not logged in.<br> Please login with a valid
-	user id <a href='../Index.html'><b>Here</b> </a>
-</center>
-<%	
-}else{
-	String UserID = session.getAttribute("UserID").toString();
-	try{
-		String qMgr = request.getParameter("qMgr");
-		String qPort = null;
-		String qHost = null;
-		String qChannel = null;
-	
-		MQAdminUtil newMQAdUtil = new MQAdminUtil();
-		Util newUtil = new Util();
-		PCFCommons newPCFCmn = new PCFCommons();
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<style type="text/css">
+			<%@ include file="../Style.css" %>
+		</style>
+		<title>Subscription List</title>
+	</head>
+	<body>
+		<%if(session.getAttribute("UserID")==null){%>
+			Looks like you are not logged in.<br> Please login with a valid
+			user id <a href='../Index.html'><b>Here</b> </a>
+		<%	
+		}else{
+			String UserID = session.getAttribute("UserID").toString();
+			try{
+				String qMgr = request.getParameter("qMgr");
+				String qPort = null;
+				String qHost = null;
+				String qChannel = null;
+			
+				MQAdminUtil newMQAdUtil = new MQAdminUtil();
+				Util newUtil = new Util();
+				PCFCommons newPCFCmn = new PCFCommons();
+		
+				List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
+			
+				for (int i=0; i<MQList.size(); i++) {
+					if(MQList.get(i).get("QMName").toString().equals(qMgr)){
+						qHost = MQList.get(i).get("QMHost").toString();
+						qPort = MQList.get(i).get("QMPort").toString();
+						qChannel = MQList.get(i).get("QMChannel").toString();
+						break;
+					}
+				}
 
-		List<Map<String, String>> MQList = newMQAdUtil.getQMEnv(UserID);
-	
-		for (int i=0; i<MQList.size(); i++) {
-			if(MQList.get(i).get("QMName").toString().equals(qMgr)){
-				qHost = MQList.get(i).get("QMHost").toString();
-				qPort = MQList.get(i).get("QMPort").toString();
-				qChannel = MQList.get(i).get("QMChannel").toString();
-				break;
-			}
-		}
-
-		List<Map<String, Object>> topicDtls = newPCFCmn.ListSubNames(qHost, Integer.parseInt(qPort), qChannel);
-		int listCtr =0;
-		int listCount =topicDtls.size();
+				List<Map<String, Object>> topicDtls = 
+						newPCFCmn.ListSubNames(qHost, Integer.parseInt(qPort), qChannel);
+				int listCtr =0;
+				int listCount =topicDtls.size();
 		%>
-		<center><b><u>List of Subscriptions in Queue Manager - <%=qMgr %></u></b></center><br>
-		<table border=1 align=center class="gridtable">
+		<b><u>List of Subscriptions in Queue Manager - <%=qMgr %></u></b><br>
+		<table border=1 class="gridtable">
 			<tr>
 				<th><b>Sub Name</b></th>
 				<th><b>Sub Topic Name</b></th>
@@ -78,14 +76,14 @@ if(session.getAttribute("UserID")==null){%>
 				<th><b>Download MQSC Script</b></th>
 			</tr>
 			<%
-					while(listCtr<listCount) {
+				while(listCtr<listCount) {
 			%>
 			<tr>
 				<td><a
-					href='QMgrSubDtl.jsp?qMgr=<%=qMgr%>&subName=<%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME").toString()%>'
-					> <%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME")%></a>
+					href='QMgrSubDtl.jsp?qMgr=<%=qMgr%>
+						&subName=<%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME").toString()%>'> 
+						<%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME")%></a>
 				</td>
-
 				<td><%=topicDtls.get(listCtr).get("MQCA_TOPIC_NAME")%></td>
 				<td><%=topicDtls.get(listCtr).get("MQCA_TOPIC_STRING")%></td>
 				<td><%=topicDtls.get(listCtr).get("MQCACF_DESTINATION")%></td>
@@ -95,29 +93,25 @@ if(session.getAttribute("UserID")==null){%>
 				<td><%=topicDtls.get(listCtr).get("MQCA_ALTERATION_DATE")%></td>
 				<td><%=topicDtls.get(listCtr).get("MQCA_ALTERATION_TIME")%></td>
 				<td><a
-					href='../DownloadQObject?qMgr=<%=qMgr%>&objType=SUB&objName=<%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME").toString()%>'
-					> Download MQSC Script For This Subscription</a>
+					href='../DownloadQObject?qMgr=<%=qMgr%>
+							&objType=SUB
+							&objName=<%=topicDtls.get(listCtr).get("MQCACF_SUB_NAME").toString()%>'> 
+							Download MQSC Script For This Subscription</a>
 				</td>
-				
-				<%
-				out.flush();
-				listCtr++;
-					}
-					
-				%>
-		</table>
+			</tr>
 		<%
-		}catch(Exception e){
-			%>
-			<center>
+					out.flush();
+					listCtr++;
+				}
+		%>
+		</table>
+		<%}catch(Exception e){%>
 			We have encountered the following error<br>
 			
 			<font color=red><b><%=e%></b></font> 
-			</center>
-			<%
+		<%
 		}
-}
-System.gc();
-%>
-</body>
+	}
+	%>
+	</body>
 </html>
